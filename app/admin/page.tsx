@@ -562,6 +562,18 @@ export default function AdminPage() {
                         {roleChanging === user._id && (
                           <Loader2 className="animate-spin text-[#5B3DF6]" size={16} />
                         )}
+                        {user.collegeIdUrl && (
+                          <a
+                            href={`/api/admin/view-college-id/${user._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-all"
+                            title="View College ID"
+                          >
+                            <GraduationCap size={16} />
+                          </a>
+                        )}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
