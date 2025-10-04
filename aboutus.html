@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassItOn - All About Us</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 4px solid #667eea;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            color: #666;
+        }
+        
+        .mega-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .mega-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .mega-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .mega-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .mega-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .mega-label {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+        
+        .market-overview {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .market-title {
+            font-size: 2.2em;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2d3436;
+            font-weight: bold;
+        }
+        
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .market-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #e17055;
+        }
+        
+        .market-item h3 {
+            font-size: 1.4em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .market-stat {
+            font-size: 1.1em;
+            margin: 8px 0;
+            color: #2d3436;
+        }
+        
+        .market-stat strong {
+            color: #e17055;
+        }
+        
+        .brain-map {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .brain-node {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 3px solid transparent;
+        }
+        
+        .brain-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .brain-node.problem {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-color: #e17055;
+        }
+        
+        .brain-node.solution {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            border-color: #5f27cd;
+        }
+        
+        .brain-node.impact {
+            background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+            border-color: #00896c;
+        }
+        
+        .node-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .node-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2d3436;
+        }
+        
+        .solution .node-title, .solution .node-content {
+            color: white;
+        }
+        
+        .node-content {
+            line-height: 1.6;
+            color: #2d3436;
+            font-size: 0.95em;
+        }
+        
+        .stat-box {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .impact-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .impact-card {
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+        }
+        
+        .impact-card.financial {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .impact-card.environmental {
+            background: linear-gradient(135deg, #00b894 0%, #00896c 100%);
+        }
+        
+        .impact-card.social {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        .impact-card.educational {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+        }
+        
+        .impact-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .impact-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .impact-stats {
+            font-size: 1.1em;
+            line-height: 1.8;
+            text-align: left;
+        }
+        
+        .vision-mission {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .vision-card, .mission-card {
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .vision-card {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+        }
+        
+        .mission-card {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        .card-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .card-content {
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        
+        .savings-showcase {
+            background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            color: white;
+        }
+        
+        .savings-title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .savings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        .savings-item {
+            background: rgba(255,255,255,0.2);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .savings-item h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .savings-item p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 1200px) {
+            .mega-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .market-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mega-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .brain-map {
+                grid-template-columns: 1fr;
+            }
+            
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .impact-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .vision-mission {
+                grid-template-columns: 1fr;
+            }
+            
+            .savings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 PassItOn - All About Us 🎓</h1>
+            <p>Revolutionizing India's $18B+ Student Marketplace Ecosystem</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); color: white; padding: 35px; border-radius: 15px; margin-bottom: 35px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; align-items: start;">
+                <div style="padding: 25px; background: rgba(255,255,255,0.15); border-radius: 12px; backdrop-filter: blur(10px);">
+                    <h2 style="font-size: 1.8em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>💡</span> What We Do
+                    </h2>
+                    <p style="font-size: 1.1em; line-height: 1.7;">
+                        We're India's <strong>first campus-verified marketplace</strong> where 293 million students buy, sell, and share books, electronics, apparel, and STEM kits—saving <strong>₹23K-63K annually</strong> while building a sustainable future.
+                    </p>
+                </div>
+                
+                <div style="padding: 25px; background: rgba(255,255,255,0.15); border-radius: 12px; backdrop-filter: blur(10px);">
+                    <h2 style="font-size: 1.8em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>🔮</span> Our Vision
+                    </h2>
+                    <p style="font-size: 1.1em; line-height: 1.7;">
+                        To become India's <strong>largest student ecosystem platform</strong>—creating a thriving <strong>$18B+ circular economy</strong> where every student has affordable access to quality education and lifestyle essentials.
+                    </p>
+                </div>
+                
+                <div style="padding: 25px; background: rgba(255,255,255,0.15); border-radius: 12px; backdrop-filter: blur(10px);">
+                    <h2 style="font-size: 1.8em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>🎯</span> Our Mission
+                    </h2>
+                    <p style="font-size: 1.1em; line-height: 1.7;">
+                        To empower students with India's <strong>most trusted all-in-one marketplace</strong>—making education affordable, technology accessible, fashion sustainable, and enabling massive savings through smart reuse.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 10px; text-align: center;">
+                <p style="font-size: 1.3em; font-weight: bold; line-height: 1.6;">
+                    📚 Books & STEM Kits | 📱 Mobiles & Laptops | 👕 Apparel & Footwear | 🌱 100% Sustainable
+                </p>
+            </div>
+        </div>
+        
+        <div class="mega-stats">
+            <div class="mega-card">
+                <div class="mega-icon">📚</div>
+                <div class="mega-value">293M</div>
+                <div class="mega-label">Total Students</div>
+            </div>
+            <div class="mega-card">
+                <div class="mega-icon">💰</div>
+                <div class="mega-value">$18B+</div>
+                <div class="mega-label">Total Market 2025</div>
+            </div>
+            <div class="mega-card">
+                <div class="mega-icon">📱</div>
+                <div class="mega-value">$73B</div>
+                <div class="mega-label">Mobile Market</div>
+            </div>
+            <div class="mega-card">
+                <div class="mega-icon">♻️</div>
+                <div class="mega-value">60-70%</div>
+                <div class="mega-label">Reusability Rate</div>
+            </div>
+            <div class="mega-card">
+                <div class="mega-icon">🌱</div>
+                <div class="mega-value">₹50K+ Cr</div>
+                <div class="mega-label">Annual Savings</div>
+            </div>
+        </div>
+        
+        <div class="market-overview">
+            <div class="market-title">📊 COMPLETE MARKET BREAKDOWN 2025-2030</div>
+            <div class="market-grid">
+                <div class="market-item">
+                    <h3>📚 Educational Materials</h3>
+                    <div class="market-stat"><strong>Books:</strong> ₹86,000 Cr (70% reusable)</div>
+                    <div class="market-stat"><strong>Stationery:</strong> $2.5B → $3.7B (8% CAGR)</div>
+                    <div class="market-stat"><strong>STEM Kits:</strong> $1.6B → $3.6B (14.7% CAGR)</div>
+                    <div class="market-stat"><strong>Lab Consumables:</strong> ₹8,000-16,000 Cr</div>
+                </div>
+                
+                <div class="market-item">
+                    <h3>📱 Electronics & Tech</h3>
+                    <div class="market-stat"><strong>Mobiles:</strong> $73B global (22.6% CAGR)</div>
+                    <div class="market-stat"><strong>Laptops:</strong> $8.9B → $10.8B (5.9% CAGR)</div>
+                    <div class="market-stat"><strong>Savings:</strong> 40-80% vs new prices</div>
+                    <div class="market-stat"><strong>Apple Share:</strong> 62.9% refurb market India</div>
+                </div>
+                
+                <div class="market-item">
+                    <h3>👟 Apparel & Footwear</h3>
+                    <div class="market-stat"><strong>Secondhand Apparel:</strong> $3.5B India (13.2% CAGR)</div>
+                    <div class="market-stat"><strong>Global Market:</strong> $208B → $521B by 2034</div>
+                    <div class="market-stat"><strong>Footwear Reuse:</strong> 15% repairable, 75% recyclable</div>
+                    <div class="market-stat"><strong>Savings:</strong> 50-70% on branded items</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="savings-showcase">
+            <div class="savings-title">💰 STUDENT SAVINGS POTENTIAL PER YEAR</div>
+            <div class="savings-grid">
+                <div class="savings-item">
+                    <h3>📚 Books & Materials</h3>
+                    <p><strong>₹3,000-8,000</strong><br>60-70% savings on textbooks<br>20-30% on stationery/STEM</p>
+                </div>
+                <div class="savings-item">
+                    <h3>📱 Electronics</h3>
+                    <p><strong>₹15,000-40,000</strong><br>40-80% off mobiles<br>30-70% off laptops</p>
+                </div>
+                <div class="savings-item">
+                    <h3>👕 Apparel & Footwear</h3>
+                    <p><strong>₹5,000-15,000</strong><br>50-70% savings on brands<br>Sustainable fashion access</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 25px; font-size: 1.4em; font-weight: bold;">
+                💵 TOTAL AVERAGE SAVINGS: ₹23,000-63,000 PER STUDENT ANNUALLY
+            </div>
+        </div>
+        
+        <div class="brain-map">
+            <div class="brain-node problem">
+                <span class="node-icon">🚨</span>
+                <div class="node-title">THE MEGA PROBLEM</div>
+                <div class="node-content">
+                    <div class="stat-box">
+                        <strong>$18B+</strong> total addressable market wasted
+                    </div>
+                    <div class="stat-box">
+                        <strong>293M students</strong> overpaying for essentials
+                    </div>
+                    <div class="stat-box">
+                        <strong>₹23K-63K</strong> lost per student yearly
+                    </div>
+                    <div class="stat-box">
+                        <strong>Massive e-waste</strong> from electronics
+                    </div>
+                    <div class="stat-box">
+                        <strong>Fast fashion</strong> environmental crisis
+                    </div>
+                </div>
+            </div>
+            
+            <div class="brain-node solution">
+                <span class="node-icon">💡</span>
+                <div class="node-title">OUR UNIFIED SOLUTION</div>
+                <div class="node-content">
+                    <div class="stat-box" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        <strong>All-in-One Platform:</strong> Books + Tech + Apparel
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        <strong>Campus-Verified</strong> student community
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        <strong>AI Price Analytics</strong> for fair deals
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        <strong>Quality Certification</strong> for electronics
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                        <strong>Sustainability Tracking</strong> & rewards
+                    </div>
+                </div>
+            </div>
+            
+            <div class="brain-node impact">
+                <span class="node-icon">🎯</span>
+                <div class="node-title">TRANSFORMATIVE IMPACT</div>
+                <div class="node-content">
+                    <div class="stat-box" style="background: rgba(255,255,255,0.3); border-color: #00896c;">
+                        <strong>₹50,000+ Cr</strong> potential annual savings
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.3); border-color: #00896c;">
+                        <strong>40-80%</strong> cost reduction for students
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.3); border-color: #00896c;">
+                        <strong>Circular economy</strong> across all categories
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.3); border-color: #00896c;">
+                        <strong>E-waste reduction</strong> & carbon savings
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,255,255,0.3); border-color: #00896c;">
+                        <strong>Educational equity</strong> for all students
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="impact-section">
+            <div class="impact-card financial">
+                <div class="impact-icon">💰</div>
+                <div class="impact-title">FINANCIAL IMPACT</div>
+                <div class="impact-stats">
+                    <strong>• Students Save:</strong> ₹23K-63K/year<br>
+                    <strong>• Market Growth:</strong> 14.7% CAGR STEM<br>
+                    <strong>• Total TAM:</strong> $18B+ across categories<br>
+                    <strong>• Resale Value:</strong> 40-70% recovery<br>
+                    <strong>• Dropout Prevention:</strong> Financial relief
+                </div>
+            </div>
+            
+            <div class="impact-card environmental">
+                <div class="impact-icon">🌍</div>
+                <div class="impact-title">ENVIRONMENTAL IMPACT</div>
+                <div class="impact-stats">
+                    <strong>• E-Waste:</strong> Millions kg diverted<br>
+                    <strong>• CO₂ Reduction:</strong> Lower production demand<br>
+                    <strong>• Water Saved:</strong> Textile manufacturing cut<br>
+                    <strong>• Trees Saved:</strong> Millions annually (paper)<br>
+                    <strong>• Circular Economy:</strong> 60-70% reuse rate
+                </div>
+            </div>
+            
+            <div class="impact-card social">
+                <div class="impact-icon">🤝</div>
+                <div class="impact-title">SOCIAL IMPACT</div>
+                <div class="impact-stats">
+                    <strong>• Access:</strong> 293M students empowered<br>
+                    <strong>• Equity:</strong> Affordable tech for all<br>
+                    <strong>• Community:</strong> Campus connections<br>
+                    <strong>• Inclusion:</strong> Lower-income support<br>
+                    <strong>• Sustainable Fashion:</strong> Conscious choices
+                </div>
+            </div>
+            
+            <div class="impact-card educational">
+                <div class="impact-icon">🎓</div>
+                <div class="impact-title">EDUCATIONAL IMPACT</div>
+                <div class="impact-stats">
+                    <strong>• STEM Access:</strong> Affordable robotics kits<br>
+                    <strong>• Digital Divide:</strong> Laptops/tablets accessible<br>
+                    <strong>• Quality Materials:</strong> Books for all<br>
+                    <strong>• Skill Building:</strong> Tech literacy improved<br>
+                    <strong>• Retention:</strong> Reduced dropouts
+                </div>
+            </div>
+        </div>
+        
+        <div class="vision-mission">
+            <div class="vision-card">
+                <div class="card-title">
+                    <span>🔮</span> OUR VISION
+                </div>
+                <div class="card-content">
+                    To become India's largest student ecosystem platform—where every one of 293 million students has affordable access to books, electronics, apparel, and educational resources, creating a thriving $18B+ circular economy by 2030.
+                </div>
+            </div>
+            
+            <div class="mission-card">
+                <div class="card-title">
+                    <span>🎯</span> OUR MISSION
+                </div>
+                <div class="card-content">
+                    To empower students with India's most trusted all-in-one marketplace—making education affordable, technology accessible, fashion sustainable, and enabling every student to save ₹23,000-63,000 annually through smart reuse.
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 15px; color: white; margin-top: 40px;">
+            <h2 style="font-size: 2.5em; text-align: center; margin-bottom: 25px;">🚀 JOIN INDIA'S LARGEST STUDENT REVOLUTION</h2>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px;">
+                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">📚</div>
+                    <div style="font-size: 1.3em; font-weight: bold;">Books & STEM</div>
+                    <div style="font-size: 0.95em; margin-top: 5px;">60-70% Savings</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">📱</div>
+                    <div style="font-size: 1.3em; font-weight: bold;">Electronics</div>
+                    <div style="font-size: 0.95em; margin-top: 5px;">40-80% Savings</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">👕</div>
+                    <div style="font-size: 1.3em; font-weight: bold;">Apparel</div>
+                    <div style="font-size: 0.95em; margin-top: 5px;">50-70% Savings</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🌱</div>
+                    <div style="font-size: 1.3em; font-weight: bold;">Sustainability</div>
+                    <div style="font-size: 0.95em; margin-top: 5px;">Massive Impact</div>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 25px; background: rgba(255,255,255,0.15); border-radius: 12px; margin-bottom: 20px;">
+                <p style="font-size: 1.2em; line-height: 1.8;">
+                    <strong>293M Students | $18B+ Market | ₹50K+ Cr Annual Savings | Complete Circular Economy</strong>
+                </p>
+            </div>
+            <p style="font-size: 1.6em; text-align: center; font-weight: bold; margin-top: 20px;">
+                www.passiton.cash
+            </p>
+            <p style="font-size: 1.1em; text-align: center; margin-top: 10px; opacity: 0.95;">
+                Powered by Quantum Leap Systems LLP | Transforming Student Life Across India 🇮🇳
+            </p>
+        </div>
+    </div>
+</body>
+</html>

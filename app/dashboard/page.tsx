@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -105,6 +106,31 @@ export default function DashboardPage() {
     setDeleting(null);
   };
 
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('⚠️ Are you sure you want to permanently delete this product?\n\nThis action cannot be undone and will remove the listing from the website completely.')) return;
+
+    setDeletingProduct(productId);
+    try {
+      const response = await fetch('/api/dashboard/products/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (response.ok) {
+        setProducts(products =>
+          products.filter(p => p._id !== productId)
+        );
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to delete product: ${errorData.error}`);
+      }
+    } catch (error) {
+      alert('Error deleting product');
+    }
+    setDeletingProduct(null);
+  };
+
   return (
     <div className="min-h-screen bg-[#faf7ed] flex flex-col items-center py-10 px-4">
       
@@ -159,33 +185,57 @@ export default function DashboardPage() {
                 <span className="mt-1 font-semibold text-lg text-[#23185B] text-center">{product.title}</span>
                 <span className="text-[#23185B] font-bold">₹{product.price}</span>
                 <span className="text-xs text-[#7c689c] mb-2">{product.category}</span>
-                <div className="flex gap-2 mt-2">
+
+                {/* Mobile-optimized button layout */}
+                <div className="flex flex-col gap-2 mt-3 w-full">
+                  {/* Primary Action - Mark as Sold/Unsold */}
                   <button
-                    className={`px-4 py-2 rounded-full font-bold shadow transition text-white ${
+                    className={`w-full px-3 py-2.5 rounded-full font-bold shadow-md transition-all text-white text-sm ${
                       product.sold
-                        ? 'bg-[#5B3DF6] hover:bg-[#3b278e]'
-                        : 'bg-[#22C55E] hover:bg-[#16a34a]'
-                    } flex items-center gap-2`}
+                        ? 'bg-[#5B3DF6] hover:bg-[#3b278e] active:bg-[#2d1f6b]'
+                        : 'bg-[#22C55E] hover:bg-[#16a34a] active:bg-[#15803d]'
+                    } flex items-center justify-center gap-2 disabled:opacity-60`}
                     disabled={toggling === product._id}
                     onClick={() => handleToggleSold(product._id, !product.sold)}
                   >
-                    {toggling === product._id && <Loader2 size={16} className="animate-spin" />}
-                    {product.sold ? (
-                      <>
-                        <XCircle size={16} /> Mark as Unsold
-                      </>
+                    {toggling === product._id ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : product.sold ? (
+                      <XCircle size={16} />
                     ) : (
-                      <>
-                        <CheckCircle size={16} /> Mark as Sold
-                      </>
+                      <CheckCircle size={16} />
                     )}
+                    <span className="hidden sm:inline">
+                      {product.sold ? 'Mark as Unsold' : 'Mark as Sold'}
+                    </span>
+                    <span className="sm:hidden">
+                      {product.sold ? 'Unsold' : 'Sold'}
+                    </span>
                   </button>
-                  <button
-                    className="px-3 py-2 rounded-full bg-[#FFE158] hover:bg-yellow-400 text-[#23185B] font-bold shadow transition flex items-center gap-1"
-                    onClick={() => router.push(`/product/${product._id}`)}
-                  >
-                    <Eye size={16} /> View
-                  </button>
+
+                  {/* Secondary Actions */}
+                  <div className="flex gap-2 w-full">
+                    <button
+                      className="flex-1 px-3 py-2 rounded-full bg-[#FFE158] hover:bg-[#ffd700] active:bg-[#e6c200] text-[#23185B] font-bold shadow-md transition-all text-sm flex items-center justify-center gap-1.5"
+                      onClick={() => router.push(`/product/${product._id}`)}
+                    >
+                      <Eye size={14} />
+                      <span className="hidden sm:inline">View</span>
+                    </button>
+
+                    <button
+                      className="flex-1 px-3 py-2 rounded-full bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold shadow-md transition-all text-sm flex items-center justify-center gap-1.5 disabled:opacity-60"
+                      disabled={deletingProduct === product._id}
+                      onClick={() => handleDeleteProduct(product._id)}
+                    >
+                      {deletingProduct === product._id ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={14} />
+                      )}
+                      <span className="hidden sm:inline">Delete</span>
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
