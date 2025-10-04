@@ -39,13 +39,14 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-      message: `User role updated to ${newRole}`,
+      message: `User role updated to ${newRole}. User needs to logout and login again for changes to take effect.`,
       user: {
         id: updatedUser._id,
         email: updatedUser.email,
         username: updatedUser.username,
         role: updatedUser.role
-      }
+      },
+      requiresReauth: true
     });
 
   } catch (error) {

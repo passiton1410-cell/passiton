@@ -135,6 +135,7 @@ export default function AdminPage() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         fetchUsers(); // Refresh the list
         if (selectedUser && selectedUser.user._id === userId) {
           setSelectedUser({
@@ -142,8 +143,10 @@ export default function AdminPage() {
             user: { ...selectedUser.user, role: newRole }
           });
         }
+        alert(`✅ ${data.message}\n\n⚠️ Important: The user must logout and login again for the role change to take effect.`);
       } else {
-        alert('Failed to update role');
+        const errorData = await response.json();
+        alert(`❌ Failed to update role: ${errorData.error}`);
       }
     } catch (error) {
       alert('Error updating role');
