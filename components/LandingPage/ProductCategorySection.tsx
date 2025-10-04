@@ -7,11 +7,23 @@ import {
   Shirt,
   BookOpen,
   Package,
-  ShoppingBag
+  ShoppingBag,
+  PenTool
 } from 'lucide-react';
 
 export default function ProductCategorySection() {
   const categories = [
+    {
+      name: 'Books',
+      icon: <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110" />,
+      color: 'from-[#5B3DF6] to-[#755FF5]',
+      hoverColor: 'group-hover:from-[#4c32d8] group-hover:to-[#6651e6]',
+      shadowColor: 'group-hover:shadow-[#5B3DF6]/30',
+      textHover: 'group-hover:text-[#5B3DF6]',
+      countHover: 'group-hover:text-[#755FF5]',
+      count: '120+',
+      slug: 'books'
+    },
     {
       name: 'Electronics',
       icon: <Smartphone className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />,
@@ -46,15 +58,15 @@ export default function ProductCategorySection() {
       slug: 'clothing'
     },
     {
-      name: 'Stationary',
-      icon: <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110" />,
-      color: 'from-[#5B3DF6] to-[#755FF5]',
-      hoverColor: 'group-hover:from-[#4c32d8] group-hover:to-[#6651e6]',
-      shadowColor: 'group-hover:shadow-[#5B3DF6]/30',
-      textHover: 'group-hover:text-[#5B3DF6]',
-      countHover: 'group-hover:text-[#755FF5]',
-      count: '120+',
-      slug: 'stationary'
+      name: 'Stationery',
+      icon: <PenTool className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />,
+      color: 'from-green-500 to-green-600',
+      hoverColor: 'group-hover:from-green-600 group-hover:to-green-700',
+      shadowColor: 'group-hover:shadow-green-500/30',
+      textHover: 'group-hover:text-green-600',
+      countHover: 'group-hover:text-green-500',
+      count: '90+',
+      slug: 'stationery'
     },
     {
       name: 'Other',
@@ -64,7 +76,7 @@ export default function ProductCategorySection() {
       shadowColor: 'group-hover:shadow-orange-500/30',
       textHover: 'group-hover:text-orange-600',
       countHover: 'group-hover:text-amber-500',
-      count: '90+',
+      count: '75+',
       slug: 'other'
     }
   ];
@@ -92,7 +104,7 @@ export default function ProductCategorySection() {
           {categories.map((category, index) => (
             <Link
               key={index}
-              href={`/products?category=${category.slug}`}
+              href={`/buyer/${category.slug}`}
               className="group flex flex-col items-center p-4 sm:p-6 rounded-2xl hover:bg-white/70 backdrop-blur-sm transition-all duration-500 hover:scale-105 hover:-translate-y-2 border border-transparent hover:border-white/50 hover:shadow-xl"
             >
               <div className={`relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br ${category.color} ${category.hoverColor} flex items-center justify-center text-white shadow-lg group-hover:shadow-2xl ${category.shadowColor} transition-all duration-500 mb-3 sm:mb-4 overflow-hidden`}>
@@ -119,7 +131,7 @@ export default function ProductCategorySection() {
 
         <div className="text-center">
           <Link
-            href="/products"
+            href="/buyer"
             className="group inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#02afa5] via-[#5B3DF6] to-[#755FF5] text-white font-semibold rounded-full hover:shadow-2xl hover:shadow-[#5B3DF6]/30 transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 text-sm sm:text-base relative overflow-hidden"
           >
             {/* Button shimmer effect */}
