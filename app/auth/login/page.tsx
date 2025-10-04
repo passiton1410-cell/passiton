@@ -32,8 +32,27 @@ export default function LoginPage() {
     const data = await res.json();
     if (res.ok) {
       setStatus('✅ Logged in! Redirecting...');
-      setTimeout(() => {
-        window.location.href = "/";
+
+      // Check user role after successful login
+      setTimeout(async () => {
+        try {
+          const userRes = await fetch('/api/auth/me');
+          const userData = await userRes.json();
+
+          if (userData.loggedIn && userData.user) {
+            // Redirect admin users to admin dashboard
+            if (userData.user.role === 'admin') {
+              window.location.href = "/admin";
+            } else {
+              window.location.href = "/";
+            }
+          } else {
+            window.location.href = "/";
+          }
+        } catch (error) {
+          console.error('Error checking user role:', error);
+          window.location.href = "/";
+        }
       }, 1000);
     } else {
       setStatus(`❌ ${data.error}`);

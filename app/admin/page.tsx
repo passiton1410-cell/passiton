@@ -82,10 +82,37 @@ export default function AdminPage() {
   const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null);
   const [userDetailsLoading, setUserDetailsLoading] = useState(false);
   const [roleChanging, setRoleChanging] = useState<string | null>(null);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
-    fetchUsers();
-    fetchStats();
+    // Check if user is admin before loading data
+    const checkAdminAccess = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+
+        if (!data.loggedIn) {
+          window.location.href = '/auth/login';
+          return;
+        }
+
+        if (data.user.role !== 'admin') {
+          setAccessDenied(true);
+          setLoading(false);
+          return;
+        }
+
+        // User is admin, proceed to load data
+        fetchUsers();
+        fetchStats();
+      } catch (error) {
+        console.error('Error checking admin access:', error);
+        setAccessDenied(true);
+        setLoading(false);
+      }
+    };
+
+    checkAdminAccess();
   }, []);
 
   const fetchUsers = async () => {
@@ -184,6 +211,32 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-[#faf7ed] flex items-center justify-center">
         <Loader2 className="animate-spin text-[#5B3DF6]" size={48} />
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen bg-[#faf7ed] flex items-center justify-center">
+        <motion.div
+          className="bg-white/90 rounded-3xl shadow-2xl border-2 border-red-200 p-8 text-center max-w-md"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div className="text-red-500 mb-4">
+            <Shield size={64} className="mx-auto mb-4" />
+          </div>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
+          <p className="text-gray-600 mb-6">
+            You don't have permission to access the admin dashboard. Only administrators can view this page.
+          </p>
+          <button
+            onClick={() => window.location.href = '/'}
+            className="px-6 py-3 bg-[#5B3DF6] text-white rounded-full font-semibold hover:bg-[#4c32d9] transition-colors"
+          >
+            Go to Home
+          </button>
+        </motion.div>
       </div>
     );
   }

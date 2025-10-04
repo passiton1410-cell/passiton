@@ -1,24 +1,52 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { User, Menu, X, House, Info, Layers, List } from "lucide-react";
+import { User, Menu, X, House, Info, Layers, List, Shield } from "lucide-react";
 import { LogoutButton } from "@/components/LogoutButton";
 import SearchBox from "../SearchBar";
 
 export function NavBar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const navItems = [
+  useEffect(() => {
+    const checkUserRole = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        if (data.loggedIn && data.user) {
+          setUserRole(data.user.role);
+        }
+      } catch (error) {
+        console.error('Error checking user role:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUserRole();
+  }, []);
+
+  const baseNavItems = [
     { name: "Home", icon: House, href: "/" },
     { name: "My Profile", icon: User, href: "/dashboard" },
     { name: "Sell", icon: Layers, href: "/seller" },
     { name: "Buy", icon: List, href: "/buyer" },
     { name: "About Us", icon: Info, href: "/about" },
   ];
+
+  // Add admin dashboard for admin users
+  const navItems = userRole === 'admin'
+    ? [
+        ...baseNavItems,
+        { name: "Admin Dashboard", icon: Shield, href: "/admin" },
+      ]
+    : baseNavItems;
 
   return (
     <header className="w-full bg-[#FDF6FF] px-4 py-5 md:px-6 shadow-sm">
