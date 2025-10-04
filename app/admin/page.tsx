@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Package, Briefcase, X, Eye, Calendar, MapPin, Phone, Mail, GraduationCap, Loader2, ShieldCheck, Shield, Trash2, Filter, Search, ExternalLink } from 'lucide-react';
+import { Users, Package, Briefcase, X, Eye, Calendar, MapPin, Phone, Mail, GraduationCap, Loader2, ShieldCheck, Shield, Trash2, ExternalLink } from 'lucide-react';
 
 interface User {
   _id: string;
@@ -85,18 +85,6 @@ export default function AdminPage() {
   const [roleChanging, setRoleChanging] = useState<string | null>(null);
   const [accessDenied, setAccessDenied] = useState(false);
 
-  // Filter states
-  const [filters, setFilters] = useState({
-    colleges: [] as string[],
-    states: [] as string[],
-    cities: [] as string[]
-  });
-  const [selectedFilters, setSelectedFilters] = useState({
-    college: 'all',
-    state: 'all',
-    city: 'all',
-    search: ''
-  });
 
   // Delete states
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
@@ -134,25 +122,11 @@ export default function AdminPage() {
     checkAdminAccess();
   }, []);
 
-  // Refetch users when filters change
-  useEffect(() => {
-    if (!loading && !accessDenied) {
-      fetchUsers();
-    }
-  }, [selectedFilters]);
-
   const fetchUsers = async () => {
     try {
-      const params = new URLSearchParams();
-      if (selectedFilters.college !== 'all') params.append('college', selectedFilters.college);
-      if (selectedFilters.state !== 'all') params.append('state', selectedFilters.state);
-      if (selectedFilters.city !== 'all') params.append('city', selectedFilters.city);
-      if (selectedFilters.search) params.append('search', selectedFilters.search);
-
-      const response = await fetch(`/api/admin/users?${params.toString()}`);
+      const response = await fetch('/api/admin/users');
       const data = await response.json();
       setUsers(data.users || []);
-      setFilters(data.filters || { colleges: [], states: [], cities: [] });
     } catch (error) {
       console.error('Failed to fetch users:', error);
     } finally {
@@ -410,78 +384,6 @@ export default function AdminPage() {
           />
         </div>
 
-        {/* Filters */}
-        <motion.div
-          className="bg-white/90 rounded-3xl shadow-2xl border-2 border-[#E0D5FA] p-6 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <Filter className="text-[#5B3DF6]" size={24} />
-            <h3 className="text-xl font-bold text-[#23185B]">Filter Users</h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={16} />
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={selectedFilters.search}
-                onChange={(e) => setSelectedFilters(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B]"
-              />
-            </div>
-
-            {/* College Filter */}
-            <select
-              value={selectedFilters.college}
-              onChange={(e) => setSelectedFilters(prev => ({ ...prev, college: e.target.value }))}
-              className="px-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B] bg-white"
-            >
-              <option value="all">All Colleges</option>
-              {filters.colleges.map(college => (
-                <option key={college} value={college}>{college}</option>
-              ))}
-            </select>
-
-            {/* State Filter */}
-            <select
-              value={selectedFilters.state}
-              onChange={(e) => setSelectedFilters(prev => ({ ...prev, state: e.target.value }))}
-              className="px-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B] bg-white"
-            >
-              <option value="all">All States</option>
-              {filters.states.map(state => (
-                <option key={state} value={state}>{state}</option>
-              ))}
-            </select>
-
-            {/* City Filter */}
-            <select
-              value={selectedFilters.city}
-              onChange={(e) => setSelectedFilters(prev => ({ ...prev, city: e.target.value }))}
-              className="px-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B] bg-white"
-            >
-              <option value="all">All Cities</option>
-              {filters.cities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Clear Filters */}
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={() => setSelectedFilters({ college: 'all', state: 'all', city: 'all', search: '' })}
-              className="px-4 py-2 text-[#7c689c] hover:text-[#5B3DF6] transition-colors font-medium"
-            >
-              Clear All Filters
-            </button>
-          </div>
-        </motion.div>
-
         {/* Users Table */}
         <motion.div
           className="bg-white/90 rounded-3xl shadow-2xl border-2 border-[#E0D5FA] overflow-hidden"
@@ -491,7 +393,7 @@ export default function AdminPage() {
           <div className="p-6 border-b border-[#E0D5FA]">
             <h2 className="text-2xl font-bold text-[#23185B] flex items-center gap-3">
               <Users className="text-[#5B3DF6]" size={28} />
-              User Management ({users.length} users)
+              User Management ({users.length} total users)
             </h2>
           </div>
 

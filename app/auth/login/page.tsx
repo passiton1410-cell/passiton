@@ -304,12 +304,17 @@ export default function LoginPage() {
             {status}
           </motion.p>
         )}
-        <p
-          className="mt-7 text-sm text-center text-[#5B3DF6] hover:underline font-medium cursor-pointer"
-          onClick={() => router.push('/auth')}
-        >
-          Don&apos;t have an account? <span className="underline">Sign up</span>
-        </p>
+        <div className="mt-7 text-center">
+          <p className="text-sm text-[#7c689c] mb-3">Don&apos;t have an account?</p>
+          <motion.button
+            onClick={() => router.push('/auth')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-full shadow-lg hover:from-green-600 hover:to-green-700 transition-all text-base"
+          >
+            Create Account
+          </motion.button>
+        </div>
       </motion.div>
     </div>
   );
