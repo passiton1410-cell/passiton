@@ -6,13 +6,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-interface Props {
-  params: {
-    userId: string;
-  };
-}
-
-export async function GET(req: Request, { params }: Props) {
+export async function GET(req: Request, { params }: { params: { userId: string } }) {
   try {
     await connectToDatabase();
 
