@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import { User } from '@/models/User';
 import { Otp } from '@/models/Otp';
+import { College } from '@/models/College';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -50,6 +51,24 @@ export async function POST(req: Request) {
     city,
     verified: true,
   });
+
+  // 6.5. Link any colleges added without user reference to this user
+  try {
+    // Find colleges that match the user's college name and don't have an addedBy reference
+    const collegeToLink = await College.findOne({
+      name: { $regex: new RegExp(`^${collegeName}$`, 'i') },
+      addedBy: null
+    });
+
+    if (collegeToLink) {
+      // Link the college to the new user
+      collegeToLink.addedBy = newUser._id;
+      await collegeToLink.save();
+    }
+  } catch (error) {
+    // Don't fail signup if college linking fails
+    console.error('Error linking college to user:', error);
+  }
 
   // 7. Delete OTP
   await Otp.deleteOne({ email });

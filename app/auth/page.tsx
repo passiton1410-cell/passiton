@@ -15,7 +15,6 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { getStates, getCitiesForState } from '@/lib/indian-states-cities';
-import { searchColleges } from '@/lib/indian-colleges';
 
 export default function AuthPage() {
   const router = useRouter();
@@ -37,6 +36,9 @@ export default function AuthPage() {
   const [collegeName, setCollegeName] = useState('');
   const [collegeSuggestions, setCollegeSuggestions] = useState<string[]>([]);
   const [showCollegeSuggestions, setShowCollegeSuggestions] = useState(false);
+  const [collegeSearchLoading, setCollegeSearchLoading] = useState(false);
+  const [showAddCollegeOption, setShowAddCollegeOption] = useState(false);
+  const [addingCollege, setAddingCollege] = useState(false);
   const collegeContainerRef = useRef<HTMLDivElement>(null);
 
   // Handle clicking outside college suggestions
@@ -60,15 +62,37 @@ export default function AuthPage() {
   };
 
   // Handle college name input and search
-  const handleCollegeNameChange = (value: string) => {
+  const handleCollegeNameChange = async (value: string) => {
     setCollegeName(value);
+    setShowAddCollegeOption(false);
+
     if (value.length >= 2) {
-      const suggestions = searchColleges(value);
-      setCollegeSuggestions(suggestions);
-      setShowCollegeSuggestions(suggestions.length > 0);
+      setCollegeSearchLoading(true);
+      try {
+        const response = await fetch(`/api/colleges/search?q=${encodeURIComponent(value)}`);
+        const data = await response.json();
+
+        if (data.colleges && data.colleges.length > 0) {
+          setCollegeSuggestions(data.colleges);
+          setShowCollegeSuggestions(true);
+          setShowAddCollegeOption(false);
+        } else {
+          setCollegeSuggestions([]);
+          setShowCollegeSuggestions(false);
+          setShowAddCollegeOption(value.length >= 3); // Show "Add college" option if no results and name is long enough
+        }
+      } catch (error) {
+        console.error('Error searching colleges:', error);
+        setCollegeSuggestions([]);
+        setShowCollegeSuggestions(false);
+        setShowAddCollegeOption(value.length >= 3);
+      } finally {
+        setCollegeSearchLoading(false);
+      }
     } else {
       setCollegeSuggestions([]);
       setShowCollegeSuggestions(false);
+      setShowAddCollegeOption(false);
     }
   };
 
@@ -77,6 +101,46 @@ export default function AuthPage() {
     setCollegeName(college);
     setCollegeSuggestions([]);
     setShowCollegeSuggestions(false);
+    setShowAddCollegeOption(false);
+  };
+
+  // Handle adding a new college
+  const handleAddNewCollege = async () => {
+    if (!collegeName.trim() || collegeName.trim().length < 3) {
+      setStatus('❌ College name must be at least 3 characters long');
+      return;
+    }
+
+    setAddingCollege(true);
+    setStatus('Adding your college to our database...');
+
+    try {
+      const response = await fetch('/api/colleges/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collegeName: collegeName.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.existed) {
+          setStatus('✅ College found and selected!');
+          setCollegeName(data.collegeName);
+        } else {
+          setStatus('✅ College added successfully! Other users can now find it too.');
+        }
+        setShowAddCollegeOption(false);
+        setShowCollegeSuggestions(false);
+      } else {
+        setStatus(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error adding college:', error);
+      setStatus('❌ Failed to add college. Please try again.');
+    } finally {
+      setAddingCollege(false);
+    }
   };
 
   // Handlers
@@ -316,7 +380,11 @@ export default function AuthPage() {
                   }}
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
-                <GraduationCap size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 pointer-events-none" />
+                {collegeSearchLoading ? (
+                  <Loader2 size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 animate-spin" />
+                ) : (
+                  <GraduationCap size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 pointer-events-none" />
+                )}
               </div>
 
               {/* College Suggestions Dropdown */}
@@ -339,6 +407,39 @@ export default function AuthPage() {
                       </div>
                     </div>
                   ))}
+                </motion.div>
+              )}
+
+              {/* Add College Option */}
+              {showAddCollegeOption && collegeName.trim().length >= 3 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl z-50 mt-2 border-2 border-[#E0D5FA]"
+                >
+                  <div className="p-4">
+                    <p className="text-sm text-[#7c689c] mb-3 text-center">
+                      Can't find your college? You can add it to our database!
+                    </p>
+                    <button
+                      onClick={handleAddNewCollege}
+                      disabled={addingCollege}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                      {addingCollege ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          Adding College...
+                        </>
+                      ) : (
+                        <>
+                          <GraduationCap size={16} />
+                          Add "{collegeName.trim()}" to Database
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </div>
