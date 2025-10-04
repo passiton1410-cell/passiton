@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Clock, Users, Briefcase, Filter } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, MapPin, Clock, Users, Briefcase, Filter, Plus } from 'lucide-react';
 
 interface Opportunity {
   _id: string;
@@ -24,6 +25,7 @@ interface Opportunity {
 }
 
 export default function OpportunitiesPage() {
+  const router = useRouter();
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -231,6 +233,35 @@ export default function OpportunitiesPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Floating Action Button */}
+      <div className="fixed bottom-6 right-6 z-50 group">
+        <button
+          onClick={() => {
+            // Navigate to add opportunity page
+            router.push('/post-opportunity');
+          }}
+          className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-110 active:scale-95"
+          aria-label="Add new opportunity"
+        >
+          <Plus
+            size={24}
+            className="transition-transform duration-300 group-hover:rotate-90"
+          />
+
+          {/* Ripple effect */}
+          <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 group-active:opacity-30 transition-opacity duration-200"></div>
+
+          {/* Pulse animation */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 animate-ping"></div>
+        </button>
+
+        {/* Tooltip */}
+        <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+          Add Opportunity
+          <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+        </div>
       </div>
     </div>
   );
