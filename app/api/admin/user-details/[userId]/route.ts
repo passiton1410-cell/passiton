@@ -6,7 +6,10 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ userId: string }> }
+) {
   try {
     await connectToDatabase();
 
@@ -30,6 +33,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
+    const params = await context.params;
     const { userId } = params;
 
     // Get user details
