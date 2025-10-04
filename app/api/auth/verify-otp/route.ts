@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
 export async function POST(req: Request) {
   await connectToDatabase();
 
-  const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName } = await req.json();
+  const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName, personalEmail, personalId } = await req.json();
 
   // 1. Validate OTP
   const existingOtp = await Otp.findOne({ email });
@@ -50,6 +50,8 @@ export async function POST(req: Request) {
     state,
     city,
     verified: true,
+    ...(personalEmail && { personalEmail }),
+    ...(personalId && { personalId }),
   });
 
   // 6.5. Link any colleges added without user reference to this user

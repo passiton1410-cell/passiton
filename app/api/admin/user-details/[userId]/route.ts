@@ -49,7 +49,10 @@ export async function GET(
     ]);
 
     const userDetails = {
-      user,
+      user: {
+        ...user,
+        collegeIdUrl: user.collegeIdUrl // Make sure college ID URL is included
+      },
       products,
       opportunities,
       stats: {

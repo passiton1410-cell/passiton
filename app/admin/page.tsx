@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Package, Briefcase, X, Eye, Calendar, MapPin, Phone, Mail, GraduationCap, Loader2, ShieldCheck, Shield } from 'lucide-react';
+import { Users, Package, Briefcase, X, Eye, Calendar, MapPin, Phone, Mail, GraduationCap, Loader2, ShieldCheck, Shield, Trash2, Filter, Search, ExternalLink } from 'lucide-react';
 
 interface User {
   _id: string;
@@ -15,6 +15,7 @@ interface User {
   collegeName: string;
   city: string;
   state: string;
+  collegeIdUrl?: string;
 }
 
 interface Stats {
@@ -84,6 +85,24 @@ export default function AdminPage() {
   const [roleChanging, setRoleChanging] = useState<string | null>(null);
   const [accessDenied, setAccessDenied] = useState(false);
 
+  // Filter states
+  const [filters, setFilters] = useState({
+    colleges: [] as string[],
+    states: [] as string[],
+    cities: [] as string[]
+  });
+  const [selectedFilters, setSelectedFilters] = useState({
+    college: 'all',
+    state: 'all',
+    city: 'all',
+    search: ''
+  });
+
+  // Delete states
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
+  const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
+  const [deletingOpportunity, setDeletingOpportunity] = useState<string | null>(null);
+
   useEffect(() => {
     // Check if user is admin before loading data
     const checkAdminAccess = async () => {
@@ -115,11 +134,25 @@ export default function AdminPage() {
     checkAdminAccess();
   }, []);
 
+  // Refetch users when filters change
+  useEffect(() => {
+    if (!loading && !accessDenied) {
+      fetchUsers();
+    }
+  }, [selectedFilters]);
+
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/admin/users');
+      const params = new URLSearchParams();
+      if (selectedFilters.college !== 'all') params.append('college', selectedFilters.college);
+      if (selectedFilters.state !== 'all') params.append('state', selectedFilters.state);
+      if (selectedFilters.city !== 'all') params.append('city', selectedFilters.city);
+      if (selectedFilters.search) params.append('search', selectedFilters.search);
+
+      const response = await fetch(`/api/admin/users?${params.toString()}`);
       const data = await response.json();
       setUsers(data.users || []);
+      setFilters(data.filters || { colleges: [], states: [], cities: [] });
     } catch (error) {
       console.error('Failed to fetch users:', error);
     } finally {
@@ -179,6 +212,99 @@ export default function AdminPage() {
       alert('Error updating role');
     } finally {
       setRoleChanging(null);
+    }
+  };
+
+  const deleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`⚠️ Are you sure you want to permanently delete user "${userName}"?\n\nThis will also delete:\n• All their products/listings\n• All their opportunities\n• All their data\n\nThis action cannot be undone!`)) {
+      return;
+    }
+
+    setDeletingUser(userId);
+    try {
+      const response = await fetch('/api/admin/delete-user', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ ${data.message}`);
+        fetchUsers(); // Refresh the list
+        if (selectedUser && selectedUser.user._id === userId) {
+          setSelectedUser(null); // Close modal if this user was selected
+        }
+      } else {
+        const errorData = await response.json();
+        alert(`❌ Failed to delete user: ${errorData.error}`);
+      }
+    } catch (error) {
+      alert('Error deleting user');
+    } finally {
+      setDeletingUser(null);
+    }
+  };
+
+  const deleteProduct = async (productId: string, productTitle: string) => {
+    if (!confirm(`⚠️ Are you sure you want to permanently delete the product "${productTitle}"?\n\nThis action cannot be undone!`)) {
+      return;
+    }
+
+    setDeletingProduct(productId);
+    try {
+      const response = await fetch('/api/admin/delete-post', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ ${data.message}`);
+        // Refresh user details if modal is open
+        if (selectedUser) {
+          fetchUserDetails(selectedUser.user._id);
+        }
+      } else {
+        const errorData = await response.json();
+        alert(`❌ Failed to delete product: ${errorData.error}`);
+      }
+    } catch (error) {
+      alert('Error deleting product');
+    } finally {
+      setDeletingProduct(null);
+    }
+  };
+
+  const deleteOpportunity = async (opportunityId: string, opportunityTitle: string) => {
+    if (!confirm(`⚠️ Are you sure you want to permanently delete the opportunity "${opportunityTitle}"?\n\nThis action cannot be undone!`)) {
+      return;
+    }
+
+    setDeletingOpportunity(opportunityId);
+    try {
+      const response = await fetch('/api/admin/delete-opportunity', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ opportunityId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ ${data.message}`);
+        // Refresh user details if modal is open
+        if (selectedUser) {
+          fetchUserDetails(selectedUser.user._id);
+        }
+      } else {
+        const errorData = await response.json();
+        alert(`❌ Failed to delete opportunity: ${errorData.error}`);
+      }
+    } catch (error) {
+      alert('Error deleting opportunity');
+    } finally {
+      setDeletingOpportunity(null);
     }
   };
 
@@ -284,6 +410,78 @@ export default function AdminPage() {
           />
         </div>
 
+        {/* Filters */}
+        <motion.div
+          className="bg-white/90 rounded-3xl shadow-2xl border-2 border-[#E0D5FA] p-6 mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <Filter className="text-[#5B3DF6]" size={24} />
+            <h3 className="text-xl font-bold text-[#23185B]">Filter Users</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={16} />
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={selectedFilters.search}
+                onChange={(e) => setSelectedFilters(prev => ({ ...prev, search: e.target.value }))}
+                className="w-full pl-10 pr-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B]"
+              />
+            </div>
+
+            {/* College Filter */}
+            <select
+              value={selectedFilters.college}
+              onChange={(e) => setSelectedFilters(prev => ({ ...prev, college: e.target.value }))}
+              className="px-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B] bg-white"
+            >
+              <option value="all">All Colleges</option>
+              {filters.colleges.map(college => (
+                <option key={college} value={college}>{college}</option>
+              ))}
+            </select>
+
+            {/* State Filter */}
+            <select
+              value={selectedFilters.state}
+              onChange={(e) => setSelectedFilters(prev => ({ ...prev, state: e.target.value }))}
+              className="px-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B] bg-white"
+            >
+              <option value="all">All States</option>
+              {filters.states.map(state => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
+
+            {/* City Filter */}
+            <select
+              value={selectedFilters.city}
+              onChange={(e) => setSelectedFilters(prev => ({ ...prev, city: e.target.value }))}
+              className="px-4 py-2 border-2 border-[#E0D5FA] rounded-lg focus:border-[#5B3DF6] focus:outline-none text-[#23185B] bg-white"
+            >
+              <option value="all">All Cities</option>
+              {filters.cities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Clear Filters */}
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => setSelectedFilters({ college: 'all', state: 'all', city: 'all', search: '' })}
+              className="px-4 py-2 text-[#7c689c] hover:text-[#5B3DF6] transition-colors font-medium"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        </motion.div>
+
         {/* Users Table */}
         <motion.div
           className="bg-white/90 rounded-3xl shadow-2xl border-2 border-[#E0D5FA] overflow-hidden"
@@ -293,7 +491,7 @@ export default function AdminPage() {
           <div className="p-6 border-b border-[#E0D5FA]">
             <h2 className="text-2xl font-bold text-[#23185B] flex items-center gap-3">
               <Users className="text-[#5B3DF6]" size={28} />
-              User Management
+              User Management ({users.length} users)
             </h2>
           </div>
 
@@ -364,6 +562,21 @@ export default function AdminPage() {
                         {roleChanging === user._id && (
                           <Loader2 className="animate-spin text-[#5B3DF6]" size={16} />
                         )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteUser(user._id, user.fullName);
+                          }}
+                          disabled={deletingUser === user._id}
+                          className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-all disabled:opacity-50"
+                          title="Delete User"
+                        >
+                          {deletingUser === user._id ? (
+                            <Loader2 className="animate-spin" size={16} />
+                          ) : (
+                            <Trash2 size={16} />
+                          )}
+                        </button>
                       </div>
                     </td>
                   </motion.tr>
@@ -418,10 +631,24 @@ export default function AdminPage() {
                           <GraduationCap size={16} />
                           <span>{selectedUser.user.collegeName}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-[#7c689c]">
+                        <div className="flex items-center gap-2 text-[#7c689c] mb-2">
                           <Calendar size={16} />
                           <span>Joined {new Date(selectedUser.user.createdAt).toLocaleDateString()}</span>
                         </div>
+                        {selectedUser.user.collegeIdUrl && (
+                          <div className="flex items-center gap-2 text-[#7c689c]">
+                            <GraduationCap size={16} />
+                            <span>College ID:</span>
+                            <a
+                              href={selectedUser.user.collegeIdUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[#5B3DF6] hover:text-[#4c32d9] flex items-center gap-1 font-medium"
+                            >
+                              View College ID <ExternalLink size={14} />
+                            </a>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right">
                         <span className={`px-3 py-1 rounded-full text-xs font-bold mb-2 inline-block ${
@@ -487,11 +714,25 @@ export default function AdminPage() {
                             <div key={product._id} className="bg-[#f7f4e8] rounded-lg p-3">
                               <div className="flex justify-between items-start mb-2">
                                 <h5 className="font-semibold text-[#23185B]">{product.title}</h5>
-                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                  product.sold ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                                }`}>
-                                  {product.sold ? 'Sold' : 'Active'}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                    product.sold ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                  }`}>
+                                    {product.sold ? 'Sold' : 'Active'}
+                                  </span>
+                                  <button
+                                    onClick={() => deleteProduct(product._id, product.title)}
+                                    disabled={deletingProduct === product._id}
+                                    className="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition-all disabled:opacity-50"
+                                    title="Delete Product"
+                                  >
+                                    {deletingProduct === product._id ? (
+                                      <Loader2 className="animate-spin" size={14} />
+                                    ) : (
+                                      <Trash2 size={14} />
+                                    )}
+                                  </button>
+                                </div>
                               </div>
                               <p className="text-[#5B3DF6] font-bold">₹{product.price}</p>
                               <p className="text-[#7c689c] text-sm">{product.category}</p>
@@ -518,11 +759,25 @@ export default function AdminPage() {
                             <div key={opportunity._id} className="bg-[#f7f4e8] rounded-lg p-3">
                               <div className="flex justify-between items-start mb-2">
                                 <h5 className="font-semibold text-[#23185B]">{opportunity.title}</h5>
-                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                  opportunity.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                                }`}>
-                                  {opportunity.active ? 'Active' : 'Inactive'}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                    opportunity.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                                  }`}>
+                                    {opportunity.active ? 'Active' : 'Inactive'}
+                                  </span>
+                                  <button
+                                    onClick={() => deleteOpportunity(opportunity._id, opportunity.title)}
+                                    disabled={deletingOpportunity === opportunity._id}
+                                    className="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition-all disabled:opacity-50"
+                                    title="Delete Opportunity"
+                                  >
+                                    {deletingOpportunity === opportunity._id ? (
+                                      <Loader2 className="animate-spin" size={14} />
+                                    ) : (
+                                      <Trash2 size={14} />
+                                    )}
+                                  </button>
+                                </div>
                               </div>
                               <p className="text-[#5B3DF6] font-medium">{opportunity.company}</p>
                               <p className="text-[#7c689c] text-sm">{opportunity.type}</p>

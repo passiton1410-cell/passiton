@@ -39,6 +39,8 @@ export default function AuthPage() {
   const [collegeSearchLoading, setCollegeSearchLoading] = useState(false);
   const [showAddCollegeOption, setShowAddCollegeOption] = useState(false);
   const [addingCollege, setAddingCollege] = useState(false);
+  const [personalEmail, setPersonalEmail] = useState('');
+  const [personalId, setPersonalId] = useState('');
   const collegeContainerRef = useRef<HTMLDivElement>(null);
 
   // Handle clicking outside college suggestions
@@ -193,6 +195,8 @@ export default function AuthPage() {
         state: selectedState,
         city: selectedCity,
         collegeName: collegeName,
+        personalEmail: personalEmail.trim() || undefined,
+        personalId: personalId.trim() || undefined,
       }),
       headers: { 'Content-Type': 'application/json' },
     });
@@ -469,6 +473,37 @@ export default function AuthPage() {
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-pink-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <LockKeyhole size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-400" />
+              </div>
+            </div>
+
+            {/* Optional Fields Section */}
+            <div className="w-full mb-4">
+              <p className="text-sm text-[#7c689c] mb-3 text-center font-medium">
+                Optional Information (can be added later)
+              </p>
+              <div className="flex flex-col gap-4">
+                {/* Personal Email */}
+                <div className="relative">
+                  <input
+                    type="email"
+                    placeholder="Personal email (optional)"
+                    value={personalEmail}
+                    onChange={(e) => setPersonalEmail(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+                  />
+                  <MailCheck size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400" />
+                </div>
+                {/* Personal ID */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Personal ID (Aadhar/Passport/etc.) - optional"
+                    value={personalId}
+                    onChange={(e) => setPersonalId(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-purple-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+                  />
+                  <UserRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400" />
+                </div>
               </div>
             </div>
             {/* College ID Upload */}
