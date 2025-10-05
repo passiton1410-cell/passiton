@@ -38,8 +38,6 @@ export async function GET(request: NextRequest) {
       .select("title image price college category email phone sold city state")
       .sort({ createdAt: -1 });
 
-    console.log(`✅ Category "${category}": Found ${products.length} products${state ? ` (State: ${state})` : ''}${city ? ` (City: ${city})` : ''}`);
-
     return NextResponse.json({ products });
   } catch (err) {
     //console.error('Error fetching products:', err);

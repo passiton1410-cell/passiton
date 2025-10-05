@@ -125,8 +125,6 @@ export async function GET(req: NextRequest) {
       .sort({ createdAt: -1 })
       .limit(50); // Limit to 50 products for performance
 
-    console.log(`✅ All Products: Found ${products.length} products${state ? ` (State: ${state})` : ''}${city ? ` (City: ${city})` : ''}${category ? ` (Category: ${category})` : ''}`);
-
     return NextResponse.json({ products });
   } catch (err) {
     console.error('Error fetching products:', err);
