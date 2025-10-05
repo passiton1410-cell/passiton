@@ -26,9 +26,16 @@ export default function AllListingsPage() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (selectedState) params.append('state', selectedState);
-      if (selectedCity) params.append('city', selectedCity);
-      if (selectedCategory) params.append('category', selectedCategory);
+      // Only add filters if they have meaningful values
+      if (selectedState && selectedState.trim() && selectedState !== 'all') {
+        params.append('state', selectedState);
+      }
+      if (selectedCity && selectedCity.trim() && selectedCity !== 'all') {
+        params.append('city', selectedCity);
+      }
+      if (selectedCategory && selectedCategory.trim() && selectedCategory !== 'all') {
+        params.append('category', selectedCategory);
+      }
 
       const url = `/api/products${params.toString() ? `?${params.toString()}` : ''}`;
       console.log('Fetching from URL:', url); // Debug log

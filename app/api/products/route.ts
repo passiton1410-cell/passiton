@@ -107,16 +107,16 @@ export async function GET(req: NextRequest) {
       sold: { $ne: true }, // Only show unsold products in public listings
     };
 
-    // Add filters if provided (flexible matching)
-    if (state && state.trim()) {
+    // Only add filters if user has actually selected something meaningful
+    if (state && state.trim() && state.trim() !== 'all' && state.trim() !== '') {
       query.state = { $regex: new RegExp(state.trim(), "i") };
     }
 
-    if (city && city.trim()) {
+    if (city && city.trim() && city.trim() !== 'all' && city.trim() !== '') {
       query.city = { $regex: new RegExp(city.trim(), "i") };
     }
 
-    if (category && category.trim()) {
+    if (category && category.trim() && category.trim() !== 'all' && category.trim() !== '') {
       query.category = { $regex: new RegExp(`^${category.trim()}$`, "i") };
     }
 
@@ -125,15 +125,7 @@ export async function GET(req: NextRequest) {
       .sort({ createdAt: -1 })
       .limit(50); // Limit to 50 products for performance
 
-    console.log('All products query:', query);
-    console.log(`Searching for - State: "${state}", City: "${city}", Category: "${category}"`);
-    console.log(`Found ${products.length} total products`);
-
-    // Debug: Show sample of actual state/city values when no results
-    if (products.length === 0 && (state || city)) {
-      const sampleProducts = await Product.find({ sold: { $ne: true } }).select("state city category").limit(5);
-      console.log('Sample state/city values in database:', sampleProducts.map(p => ({ state: p.state, city: p.city, category: p.category })));
-    }
+    console.log(`✅ All Products: Found ${products.length} products${state ? ` (State: ${state})` : ''}${city ? ` (City: ${city})` : ''}${category ? ` (Category: ${category})` : ''}`);
 
     return NextResponse.json({ products });
   } catch (err) {

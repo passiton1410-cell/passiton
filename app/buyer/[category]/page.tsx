@@ -25,16 +25,25 @@ export default function CategoryPage() {
       setLoading(true);
       try {
         const params = new URLSearchParams();
-        if (selectedState) params.append('state', selectedState);
-        if (selectedCity) params.append('city', selectedCity);
+        // Only add filters if they have meaningful values
+        if (selectedState && selectedState.trim() && selectedState !== 'all') {
+          params.append('state', selectedState);
+        }
+        if (selectedCity && selectedCity.trim() && selectedCity !== 'all') {
+          params.append('city', selectedCity);
+        }
 
         const url = `/api/products/category/${category}${params.toString() ? `?${params.toString()}` : ''}`;
+        console.log('Fetching products from:', url); // Debug log
         const res = await fetch(url);
         const data = await res.json();
-        setProducts(data.products);
-        setFiltered(data.products);
+        console.log(`Found ${data.products?.length || 0} products in ${category}`); // Debug log
+        setProducts(data.products || []);
+        setFiltered(data.products || []);
       } catch (error) {
         console.error('Error fetching products:', error);
+        setProducts([]);
+        setFiltered([]);
       } finally {
         setLoading(false);
       }
