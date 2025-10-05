@@ -2,9 +2,16 @@
 
 import { useEffect, useState } from 'react';
 
+interface TestResults {
+  dashboard?: any;
+  allProducts?: any;
+  electronics?: any;
+  books?: any;
+}
+
 export default function SimpleTestPage() {
   const [step, setStep] = useState(1);
-  const [results, setResults] = useState<any>({});
+  const [results, setResults] = useState<TestResults>({});
 
   useEffect(() => {
     runDiagnostics();
@@ -19,10 +26,10 @@ export default function SimpleTestPage() {
       const dashboardRes = await fetch('/api/dashboard/products');
       const dashboardData = await dashboardRes.json();
       console.log('📊 Dashboard API response:', dashboardData);
-      setResults(prev => ({ ...prev, dashboard: dashboardData }));
+      setResults((prev: TestResults) => ({ ...prev, dashboard: dashboardData }));
     } catch (err) {
       console.error('❌ Dashboard API failed:', err);
-      setResults(prev => ({ ...prev, dashboard: { error: String(err) } }));
+      setResults((prev: TestResults) => ({ ...prev, dashboard: { error: String(err) } }));
     }
 
     // Step 2: Test all products API
@@ -31,10 +38,10 @@ export default function SimpleTestPage() {
       const allRes = await fetch('/api/products');
       const allData = await allRes.json();
       console.log('📦 All products API response:', allData);
-      setResults(prev => ({ ...prev, allProducts: allData }));
+      setResults((prev: TestResults) => ({ ...prev, allProducts: allData }));
     } catch (err) {
       console.error('❌ All products API failed:', err);
-      setResults(prev => ({ ...prev, allProducts: { error: String(err) } }));
+      setResults((prev: TestResults) => ({ ...prev, allProducts: { error: String(err) } }));
     }
 
     // Step 3: Test electronics category API
@@ -43,10 +50,10 @@ export default function SimpleTestPage() {
       const electronicsRes = await fetch('/api/products/category/electronics');
       const electronicsData = await electronicsRes.json();
       console.log('⚡ Electronics API response:', electronicsData);
-      setResults(prev => ({ ...prev, electronics: electronicsData }));
+      setResults((prev: TestResults) => ({ ...prev, electronics: electronicsData }));
     } catch (err) {
       console.error('❌ Electronics API failed:', err);
-      setResults(prev => ({ ...prev, electronics: { error: String(err) } }));
+      setResults((prev: TestResults) => ({ ...prev, electronics: { error: String(err) } }));
     }
 
     // Step 4: Test books category API
@@ -55,10 +62,10 @@ export default function SimpleTestPage() {
       const booksRes = await fetch('/api/products/category/books');
       const booksData = await booksRes.json();
       console.log('📚 Books API response:', booksData);
-      setResults(prev => ({ ...prev, books: booksData }));
+      setResults((prev: TestResults) => ({ ...prev, books: booksData }));
     } catch (err) {
       console.error('❌ Books API failed:', err);
-      setResults(prev => ({ ...prev, books: { error: String(err) } }));
+      setResults((prev: TestResults) => ({ ...prev, books: { error: String(err) } }));
     }
 
     setStep(5); // Complete
