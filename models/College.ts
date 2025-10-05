@@ -26,6 +26,5 @@ const CollegeSchema = new mongoose.Schema({
 
 // Index for faster searching
 CollegeSchema.index({ name: 'text' });
-CollegeSchema.index({ name: 1 });
 
 export const College = mongoose.models.College || mongoose.model('College', CollegeSchema);
