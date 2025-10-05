@@ -102,9 +102,9 @@ export async function GET(req: NextRequest) {
     const city = searchParams.get('city');
     const category = searchParams.get('category');
 
-    // Build query object
+    // Build query object - TEMPORARILY REMOVING SOLD FILTER FOR DEBUGGING
     const query: any = {
-      sold: { $ne: true }, // Only show unsold products in public listings
+      // sold: { $ne: true }, // COMMENTED OUT TO SEE ALL PRODUCTS
     };
 
     // Only add filters if user has actually selected something meaningful
@@ -124,6 +124,13 @@ export async function GET(req: NextRequest) {
       .select("title image price college category email phone sold city state")
       .sort({ createdAt: -1 })
       .limit(50); // Limit to 50 products for performance
+
+    console.log(`🔍 DEBUG: All products - Found ${products.length} products`);
+    console.log('🔍 DEBUG: Sample products:', products.slice(0, 2).map(p => ({
+      title: p.title,
+      category: p.category,
+      sold: p.sold
+    })));
 
     return NextResponse.json({ products });
   } catch (err) {

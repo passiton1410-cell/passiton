@@ -19,10 +19,10 @@ export async function GET(request: NextRequest) {
     const state = searchParams.get('state');
     const city = searchParams.get('city');
 
-    // Build query object
+    // Build query object - TEMPORARILY REMOVING SOLD FILTER FOR DEBUGGING
     const query: any = {
       category: { $regex: new RegExp(`^${category}$`, "i") },
-      sold: { $ne: true }, // Only show unsold products in public listings
+      // sold: { $ne: true }, // COMMENTED OUT TO SEE ALL PRODUCTS
     };
 
     // Only add filters if user has actually selected something meaningful
@@ -37,6 +37,13 @@ export async function GET(request: NextRequest) {
     const products = await Product.find(query)
       .select("title image price college category email phone sold city state")
       .sort({ createdAt: -1 });
+
+    console.log(`🔍 DEBUG: Category "${category}" - Found ${products.length} products`);
+    console.log('🔍 DEBUG: Sample products:', products.slice(0, 2).map(p => ({
+      title: p.title,
+      category: p.category,
+      sold: p.sold
+    })));
 
     return NextResponse.json({ products });
   } catch (err) {

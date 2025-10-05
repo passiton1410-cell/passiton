@@ -9,8 +9,6 @@ export default function CategoryPage() {
   // @ts-ignore
   const { category } = useParams();
   const [products, setProducts] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filtered, setFiltered] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,11 +20,9 @@ export default function CategoryPage() {
         const res = await fetch(`/api/products/category/${category}`);
         const data = await res.json();
         setProducts(data.products || []);
-        setFiltered(data.products || []);
       } catch (error) {
         console.error('Error fetching products:', error);
         setProducts([]);
-        setFiltered([]);
       } finally {
         setLoading(false);
       }
@@ -35,15 +31,6 @@ export default function CategoryPage() {
     fetchProducts();
   }, [category]);
 
-  useEffect(() => {
-    const term = searchTerm.toLowerCase();
-    const results = products.filter(p =>
-      p.title.toLowerCase().includes(term) ||
-      p.college.toLowerCase().includes(term) ||
-      p.price.toLowerCase().includes(term)
-    );
-    setFiltered(results);
-  }, [searchTerm, products]);
 
   return (
     <motion.div
@@ -61,17 +48,6 @@ export default function CategoryPage() {
         {category} Listings
       </motion.h2>
 
-      <motion.input
-        type="text"
-        placeholder="🔍 Search by title, price or college"
-        className="w-full max-w-xl mx-auto block mb-10 px-6 py-4
-                  rounded-full bg-white text-[#23185B] font-medium
-                  border-2 border-[#E0D5FA] shadow focus:outline-none
-                  focus:ring-2 focus:ring-[#5B3DF6] transition-all placeholder:text-[#a78bfa]"
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-        whileFocus={{ scale: 1.025 }}
-      />
 
       {loading ? (
         <motion.div
@@ -82,7 +58,7 @@ export default function CategoryPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5B3DF6]"></div>
           <span className="ml-4 text-[#5B3DF6] font-medium">Loading products...</span>
         </motion.div>
-      ) : filtered.length === 0 ? (
+      ) : products.length === 0 ? (
         <motion.p
           className="text-center text-[#a78bfa] text-lg font-semibold mt-10"
           initial={{ opacity: 0 }}
@@ -104,7 +80,7 @@ export default function CategoryPage() {
             },
           }}
         >
-          {filtered.map(product => (
+          {products.map(product => (
             <motion.div
               key={product._id}
               variants={{
