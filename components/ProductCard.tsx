@@ -77,11 +77,8 @@ export function ProductCard({ product }: Props) {
           )}
         </div>
         <div className="px-5 pt-2 pb-1 flex flex-row items-center gap-2">
-          <span className="rounded-full px-3 py-1 text-xs font-semibold capitalize shadow-sm {categoryColor(product.category)} {categoryColor(product.category)}"
-                style={{background: undefined, color: undefined}}>
-            <span className={`${categoryColor(product.category)} px-3 py-1 rounded-full`}>
-              {product.category}
-            </span>
+          <span className={`${categoryColor(product.category)} px-3 py-1 rounded-full text-xs font-semibold capitalize shadow-sm`}>
+            {product.category}
           </span>
           <span className="ml-auto text-xl font-black text-[#22C55E] tracking-wide drop-shadow-sm">
             ₹{product.price}

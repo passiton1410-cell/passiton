@@ -19,6 +19,10 @@ export default function CategoryPage() {
       try {
         const res = await fetch(`/api/products/category/${category}`);
         const data = await res.json();
+        console.log('🔍 FRONTEND: Raw API response:', data);
+        console.log('🔍 FRONTEND: Products array:', data.products);
+        console.log('🔍 FRONTEND: Products length:', data.products?.length);
+        console.log('🔍 FRONTEND: First product details:', data.products?.[0]);
         setProducts(data.products || []);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -31,6 +35,9 @@ export default function CategoryPage() {
     fetchProducts();
   }, [category]);
 
+
+  console.log('🔍 FRONTEND: Current products state:', products);
+  console.log('🔍 FRONTEND: Loading state:', loading);
 
   return (
     <motion.div
@@ -67,32 +74,38 @@ export default function CategoryPage() {
           No matching products found.
         </motion.p>
       ) : (
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.07,
+        <>
+          {console.log('🔍 FRONTEND: About to render products grid with', products.length, 'products')}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.07,
+                },
               },
-            },
-          }}
-        >
-          {products.map(product => (
-            <motion.div
-              key={product._id}
-              variants={{
-                hidden: { opacity: 0, y: 12 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.4 }}
-            >
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
-        </motion.div>
+            }}
+          >
+            {products.map((product, index) => {
+              console.log(`🔍 FRONTEND: Rendering product ${index}:`, product);
+              return (
+                <motion.div
+                  key={product._id}
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </>
       )}
     </motion.div>
   );
