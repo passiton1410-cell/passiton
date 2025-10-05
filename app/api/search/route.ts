@@ -22,12 +22,20 @@ export async function GET(request: NextRequest) {
     const regex = new RegExp(`.*${safeQuery}.*`, 'i');
 
 const products = await Product.find({
-  $or: [
-    { title: regex },
-    { category: regex },
-  ],
-  
-});
+  $and: [
+    {
+      $or: [
+        { title: regex },
+        { category: regex },
+        { college: regex },
+      ],
+    },
+    { sold: { $ne: true } } // Only show unsold products in search results
+  ]
+})
+.select("title image price college category email phone sold city state")
+.sort({ createdAt: -1 })
+.limit(50);
 
 
 
