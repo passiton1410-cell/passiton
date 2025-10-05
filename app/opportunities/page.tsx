@@ -87,38 +87,38 @@ export default function OpportunitiesPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Search and Filters */}
-        <div className="bg-white rounded-xl shadow-xl border-2 border-blue-100 p-6 sm:p-8 mb-6 sm:mb-8 backdrop-blur-sm">
+        <div className="bg-white rounded-xl shadow-xl border-2 border-[#E0D5FA] p-6 sm:p-8 mb-6 sm:mb-8 backdrop-blur-sm">
           {/* Filter Header */}
-          <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
-            <Filter className="h-5 w-5 text-blue-600" />
-            <h2 className="text-lg font-semibold text-gray-800">Search & Filter Opportunities</h2>
+          <div className="flex items-center gap-2 mb-4 pb-2 border-b border-[#E0D5FA]">
+            <Filter className="h-5 w-5 text-[#5B3DF6]" />
+            <h2 className="text-lg font-bold text-[#23185B]">Search & Filter Opportunities</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="sm:col-span-2 lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Search Opportunities</label>
+              <label className="block text-sm font-bold text-[#23185B] mb-2">Search Opportunities</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-blue-500 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-[#5B3DF6] pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search by title, company, or description..."
-                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base bg-gray-50 hover:bg-white transition-colors shadow-sm"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border-2 border-[#E0D5FA] rounded-xl focus:ring-2 focus:ring-[#5B3DF6] focus:border-[#5B3DF6] text-sm sm:text-base bg-white text-[#23185B] hover:bg-gray-50 transition-colors shadow-sm font-medium placeholder:text-[#a78bfa]"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Opportunity Type</label>
+              <label className="block text-sm font-bold text-[#23185B] mb-2">Opportunity Type</label>
               <div className="relative">
-                <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-500 pointer-events-none" />
+                <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B3DF6] pointer-events-none" />
                 <select
-                  className="w-full pl-10 pr-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base bg-gray-50 hover:bg-white transition-colors shadow-sm appearance-none cursor-pointer"
+                  className="w-full pl-10 pr-4 py-3 sm:py-4 border-2 border-[#E0D5FA] rounded-xl focus:ring-2 focus:ring-[#5B3DF6] focus:border-[#5B3DF6] text-sm sm:text-base bg-white text-[#23185B] hover:bg-gray-50 transition-colors shadow-sm appearance-none cursor-pointer font-medium"
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
                 >
                   {opportunityTypes.map(type => (
-                    <option key={type} value={type}>
+                    <option key={type} value={type} className="text-[#23185B]">
                       {type === 'all' ? 'All Types' : type.charAt(0).toUpperCase() + type.slice(1)}
                     </option>
                   ))}
@@ -126,16 +126,16 @@ export default function OpportunitiesPage() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
+              <label className="block text-sm font-bold text-[#23185B] mb-2">Work Location</label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-500 pointer-events-none" />
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B3DF6] pointer-events-none" />
                 <select
-                  className="w-full pl-10 pr-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm sm:text-base bg-gray-50 hover:bg-white transition-colors shadow-sm appearance-none cursor-pointer"
+                  className="w-full pl-10 pr-4 py-3 sm:py-4 border-2 border-[#E0D5FA] rounded-xl focus:ring-2 focus:ring-[#5B3DF6] focus:border-[#5B3DF6] text-sm sm:text-base bg-white text-[#23185B] hover:bg-gray-50 transition-colors shadow-sm appearance-none cursor-pointer font-medium"
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
                 >
                   {locationTypes.map(location => (
-                    <option key={location} value={location}>
+                    <option key={location} value={location} className="text-[#23185B]">
                       {location === 'all' ? 'All Locations' : location.charAt(0).toUpperCase() + location.slice(1)}
                     </option>
                   ))}

@@ -1,6 +1,7 @@
 import { use } from "react";
 import { connectToDatabase } from "@/lib/db";
 import { Product } from "@/models/Product";
+import { MessageCircle, Mail, Phone } from "lucide-react";
 
 // Helper for colored category badge
 const categoryColor = (cat: string) => {
@@ -108,25 +109,46 @@ export default function ProductDetail({
         </div>
 
         {/* Contact */}
-        <div className="w-full flex flex-col gap-2 mt-2">
-          {product.phone && (
-            <a
-              href={`https://wa.me/91${product.phone}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#22C55E]/90 text-lg font-bold text-white shadow hover:bg-[#16a34a] transition"
-            >
-              📞 WhatsApp: {product.phone}
-            </a>
-          )}
-          {product.email && (
-            <a
-              href={`mailto:${product.email}`}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#5B3DF6]/90 text-lg font-bold text-white shadow hover:bg-[#3a28a7] transition"
-            >
-              ✉️ Email: {product.email}
-            </a>
-          )}
+        <div className="w-full mt-6">
+          <h3 className="text-lg font-bold text-[#23185B] mb-4 text-center">Contact Seller</h3>
+          <div className="flex flex-col gap-3">
+            {product.phone && (
+              <a
+                href={`https://wa.me/91${product.phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Contact seller via WhatsApp at ${product.phone}`}
+                className="group w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#22C55E] text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
+              >
+                <MessageCircle size={20} className="group-hover:animate-pulse" />
+                <span className="text-base">Chat on WhatsApp</span>
+                <div className="ml-auto opacity-75">
+                  <Phone size={16} />
+                </div>
+              </a>
+            )}
+            {product.email && (
+              <a
+                href={`mailto:${product.email}`}
+                aria-label={`Send email to seller at ${product.email}`}
+                className="group w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-[#5B3DF6] to-[#6C4AB6] text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
+              >
+                <Mail size={20} className="group-hover:animate-bounce" />
+                <span className="text-base">Send Email</span>
+                <div className="ml-auto opacity-75">
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">Email</span>
+                </div>
+              </a>
+            )}
+          </div>
+
+          {/* Contact Info Hint */}
+          <div className="mt-4 p-3 bg-[#faf7ed] border border-[#E0D5FA] rounded-lg">
+            <p className="text-xs text-[#7c689c] text-center leading-relaxed">
+              <span className="font-medium">💡 Quick Tip:</span> WhatsApp is usually faster for instant replies.
+              Both options will open in a new window.
+            </p>
+          </div>
         </div>
       </div>
     </div>

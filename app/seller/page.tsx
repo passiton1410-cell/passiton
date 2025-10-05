@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, UploadCloud } from "lucide-react";
+import CollegeAutocomplete from "@/components/CollegeAutocomplete";
 
 // Title validation: 5-60 chars, not only numbers/symbols, not repeated numbers
 function isValidTitle(title: string) {
@@ -35,7 +36,7 @@ export default function SellerPage() {
     price: "",
     category: "",
     image: "",
-    college: "KIET Group of Institutions",
+    college: "",
     phone: "",
     description: "",
   });
@@ -79,7 +80,7 @@ export default function SellerPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { title, price, phone, description, category, image } = formData;
+    const { title, price, phone, description, category, image, college } = formData;
     const numericPrice = parseInt(price);
 
     if (!isValidTitle(title.trim())) {
@@ -96,6 +97,10 @@ export default function SellerPage() {
     }
     if (!image) {
       setStatus("❌ Please upload a product image.");
+      return;
+    }
+    if (!college.trim()) {
+      setStatus("❌ Please select or add your college.");
       return;
     }
     if (isNaN(numericPrice) || numericPrice < 10 || numericPrice > 50000) {
@@ -120,7 +125,7 @@ export default function SellerPage() {
           price: "",
           category: "",
           image: "",
-          college: "KIET Group of Institutions",
+          college: "",
           phone: "",
           description: "",
         });
@@ -248,20 +253,15 @@ export default function SellerPage() {
             )}
           </div>
 
-          {/* COLLEGE SELECT */}
-          <select
-            name="college"
+          {/* COLLEGE AUTOCOMPLETE */}
+          <CollegeAutocomplete
             value={formData.college}
-            onChange={handleChange}
+            onChange={(value) => setFormData(prev => ({ ...prev, college: value }))}
+            placeholder="Select or add your college"
+            className="w-full mt-1"
+            inputClassName="w-full px-5 py-3 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
             required
-            className="w-full px-5 py-3 mt-1 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow font-semibold"
-          >
-            <option value="">Select Your College</option>
-            <option value="KIET Group of Institutions">KIET Group of Institutions</option>
-            <option value="Bennett University">Bennett University</option>
-            <option value="Shiv Nadar University">Shiv Nadar University</option>
-            <option value="PSIT">PSIT</option>
-          </select>
+          />
 
           <motion.button
             type="submit"

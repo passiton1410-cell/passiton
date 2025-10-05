@@ -14,12 +14,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Category missing" }, { status: 400 });
     }
 
-    const products = await Product.find({
+    // Get query parameters for filtering
+    const { searchParams } = url;
+    const state = searchParams.get('state');
+    const city = searchParams.get('city');
+
+    // Build query object
+    const query: any = {
       category: { $regex: new RegExp(`^${category}$`, "i") },
-    })
-      .select("title image price college category email phone sold")
+    };
+
+    // Add state filter if provided
+    if (state && state.trim()) {
+      query.state = { $regex: new RegExp(`^${state.trim()}$`, "i") };
+    }
+
+    // Add city filter if provided
+    if (city && city.trim()) {
+      query.city = { $regex: new RegExp(`^${city.trim()}$`, "i") };
+    }
+
+    const products = await Product.find(query)
+      .select("title image price college category email phone sold city state")
       .sort({ createdAt: -1 });
-      console.log(products)
 
     return NextResponse.json({ products });
   } catch (err) {

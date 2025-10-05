@@ -332,12 +332,12 @@ export default function AboutPage() {
               { icon: "📚", title: "Books & STEM", savings: "60-70% Savings" },
               { icon: "📱", title: "Electronics", savings: "40-80% Savings" },
               { icon: "👕", title: "Apparel", savings: "50-70% Savings" },
-              { icon: "🌱", title: "Sustainability", savings: "Massive Impact" }
+              { icon: "🌱", title: "Sustainability", savings: "Eco Impact" }
             ].map((item, index) => (
-              <div key={index} className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+              <div key={index} className="bg-white/20 backdrop-blur-sm p-4 rounded-xl flex flex-col items-center justify-between min-h-[120px]">
                 <div className="text-3xl mb-2">{item.icon}</div>
-                <div className="font-bold text-lg mb-1">{item.title}</div>
-                <div className="text-sm opacity-95">{item.savings}</div>
+                <div className="font-bold text-lg mb-1 text-center">{item.title}</div>
+                <div className="text-sm opacity-95 text-center">{item.savings}</div>
               </div>
             ))}
           </div>

@@ -20,6 +20,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { getStates, getCitiesForState } from '@/lib/indian-states-cities';
+import CollegeAutocomplete from '@/components/CollegeAutocomplete';
 
 export default function PostOpportunityPage() {
   const router = useRouter();
@@ -435,17 +436,12 @@ export default function PostOpportunityPage() {
               <label className="block text-sm font-bold text-[#23185B] mb-2">
                 College/University
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="college"
-                  value={formData.college}
-                  onChange={handleInputChange}
-                  placeholder="Your college name"
-                  className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
-                />
-                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
-              </div>
+              <CollegeAutocomplete
+                value={formData.college}
+                onChange={(value) => setFormData(prev => ({ ...prev, college: value }))}
+                placeholder="Select or add your college"
+                className="w-full"
+              />
             </div>
 
             {/* Status Message */}

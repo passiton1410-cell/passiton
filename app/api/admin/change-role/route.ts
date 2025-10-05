@@ -27,6 +27,36 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
+    // Prevent admin from changing their own role
+    if (currentUser._id.toString() === userId) {
+      return NextResponse.json({
+        error: 'You cannot change your own role. Ask another admin to change it for you.'
+      }, { status: 403 });
+    }
+
+    // Get the target user to check current role
+    const targetUser = await User.findById(userId);
+    if (!targetUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Count current admins
+    const adminCount = await User.countDocuments({ role: 'admin' });
+
+    // If trying to demote an admin to user, ensure at least 1 admin remains
+    if (targetUser.role === 'admin' && newRole === 'user' && adminCount <= 1) {
+      return NextResponse.json({
+        error: 'Cannot demote the last admin. There must be at least 1 admin account.'
+      }, { status: 400 });
+    }
+
+    // If trying to promote a user to admin, ensure maximum 5 admins
+    if (targetUser.role === 'user' && newRole === 'admin' && adminCount >= 5) {
+      return NextResponse.json({
+        error: 'Cannot promote to admin. Maximum of 5 admin accounts allowed.'
+      }, { status: 400 });
+    }
+
     // Update user role
     const updatedUser = await User.findByIdAndUpdate(
       userId,
