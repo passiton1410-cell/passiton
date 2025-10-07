@@ -13,6 +13,7 @@ const UserSchema = new Schema({
   collegeName: { type: String },
   state: { type: String, required: true },   // Indian state
   city: { type: String, required: true },    // Indian city
+  pincode: { type: String },                 // Pincode
   personalEmail: { type: String },           // optional personal email
   personalId: { type: String },              // optional personal ID
 });

@@ -33,6 +33,7 @@ export default function AuthPage() {
   const [showTnc, setShowTnc] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
+  const [pincode, setPincode] = useState('');
   const [collegeName, setCollegeName] = useState('');
   const [collegeSuggestions, setCollegeSuggestions] = useState<string[]>([]);
   const [showCollegeSuggestions, setShowCollegeSuggestions] = useState(false);
@@ -197,6 +198,7 @@ export default function AuthPage() {
         collegeName: collegeName,
         personalEmail: personalEmail.trim() || undefined,
         personalId: personalId.trim() || undefined,
+        pincode: pincode.trim() || undefined,
       }),
       headers: { 'Content-Type': 'application/json' },
     });
@@ -327,7 +329,7 @@ export default function AuthPage() {
               </div>
             </div>
 
-            {/* State and City Dropdowns */}
+            {/* State, City, and Pincode Fields */}
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {/* State Dropdown */}
               <div className="relative">
@@ -366,6 +368,20 @@ export default function AuthPage() {
                   ))}
                 </select>
                 <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Pincode Field */}
+            <div className="w-full mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Pincode (optional)"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
+                  className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-purple-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+                />
+                <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-500 pointer-events-none" />
               </div>
             </div>
 

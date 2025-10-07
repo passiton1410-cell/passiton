@@ -2,6 +2,7 @@ import { use } from "react";
 import { connectToDatabase } from "@/lib/db";
 import { Product } from "@/models/Product";
 import { MessageCircle, Mail, Phone } from "lucide-react";
+import { isValidObjectId } from "mongoose";
 
 // Helper for colored category badge
 const categoryColor = (cat: string) => {
@@ -34,6 +35,12 @@ type ProductType = {
 };
 
 async function getProduct(id: string): Promise<ProductType | null> {
+  // Validate ObjectId format before querying database
+  if (!isValidObjectId(id)) {
+    console.log(`Invalid ObjectId format: "${id}"`);
+    return null;
+  }
+
   await connectToDatabase();
   const product = await Product.findById(id).lean();
   return product as ProductType | null;

@@ -27,6 +27,9 @@ export async function GET(req: NextRequest) {
         role: user.role,
         collegeName: user.collegeName,
         mobile: user.mobile,
+        state: user.state,
+        city: user.city,
+        pincode: user.pincode,
       },
     });
   } catch {

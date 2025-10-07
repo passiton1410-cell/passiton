@@ -25,7 +25,7 @@ export default function Testimonials() {
         "THonestly didn’t expect it to be this easy. Listed my mobile and got a ping within minutes!",
       name: "Antra Agarwal",
       //designation: "Operations Director at CloudScale",
-      src: "1.png",
+      src: "/1.png",
     },
     {
       quote:

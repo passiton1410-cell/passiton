@@ -11,6 +11,9 @@ interface User {
   mobile?: string;
   collegeName?: string;
   verified?: boolean;
+  pincode?: string;
+  state?: string;
+  city?: string;
 }
 
 export default function UserInfoCard() {
@@ -22,6 +25,9 @@ export default function UserInfoCard() {
     collegeIdUrl: "",
     mobile: "",
     collegeName: "",
+    pincode: "",
+    state: "",
+    city: "",
   });
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -38,6 +44,9 @@ export default function UserInfoCard() {
             collegeIdUrl: data.user.collegeIdUrl || "",
             mobile: data.user.mobile || "",
             collegeName: data.user.collegeName || "",
+            pincode: data.user.pincode || "",
+            state: data.user.state || "",
+            city: data.user.city || "",
           });
         }
       });
@@ -183,6 +192,23 @@ export default function UserInfoCard() {
           )}
         </div>
 
+        {/* Pincode */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Pincode</label>
+          {editing ? (
+            <input
+              type="text"
+              value={form.pincode}
+              onChange={(e) =>
+                setForm({ ...form, pincode: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            />
+          ) : (
+            <p className="text-sm text-gray-800">{user.pincode || "Not added"}</p>
+          )}
+        </div>
+
         {/* College Name */}
         <div>
           <label className="block text-sm font-semibold mb-1">College</label>
@@ -198,6 +224,44 @@ export default function UserInfoCard() {
           ) : (
             <p className="text-sm text-gray-800">
               {user.collegeName || "Not added"}
+            </p>
+          )}
+        </div>
+
+        {/* State */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">State</label>
+          {editing ? (
+            <input
+              type="text"
+              value={form.state}
+              onChange={(e) =>
+                setForm({ ...form, state: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            />
+          ) : (
+            <p className="text-sm text-gray-800">
+              {user.state || "Not added"}
+            </p>
+          )}
+        </div>
+
+        {/* City */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">City</label>
+          {editing ? (
+            <input
+              type="text"
+              value={form.city}
+              onChange={(e) =>
+                setForm({ ...form, city: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            />
+          ) : (
+            <p className="text-sm text-gray-800">
+              {user.city || "Not added"}
             </p>
           )}
         </div>

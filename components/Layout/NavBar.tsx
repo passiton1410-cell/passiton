@@ -4,13 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { User, Menu, X, House, Info, Layers, List, Shield } from "lucide-react";
+import { User, Menu, X, House, Info, Layers, List, Shield, ChevronDown, BookOpen, Smartphone, Sofa, Shirt, PenTool, Package } from "lucide-react";
 import { LogoutButton } from "@/components/LogoutButton";
 import SearchBox from "../SearchBar";
 
 export function NavBar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +32,32 @@ export function NavBar() {
 
     checkUserRole();
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (categoriesOpen) {
+        setCategoriesOpen(false);
+      }
+    };
+
+    if (categoriesOpen) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [categoriesOpen]);
+
+  const categories = [
+    { name: 'Books', icon: BookOpen, slug: 'books' },
+    { name: 'Electronics', icon: Smartphone, slug: 'electronics' },
+    { name: 'Furniture', icon: Sofa, slug: 'furniture' },
+    { name: 'Clothing', icon: Shirt, slug: 'clothing' },
+    { name: 'Stationery', icon: PenTool, slug: 'stationery' },
+    { name: 'Other', icon: Package, slug: 'other' }
+  ];
 
   const baseNavItems = [
     { name: "Home", icon: House, href: "/" },
@@ -119,6 +146,55 @@ export function NavBar() {
               {name}
             </motion.button>
           ))}
+
+          {/* Categories Dropdown */}
+          <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCategoriesOpen(!categoriesOpen);
+              }}
+              className="flex items-center gap-2 px-1 py-2 text-sm font-semibold text-[#5B3DF6] hover:bg-[#E0D5FA] transition rounded-full"
+            >
+              Categories
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`}
+              />
+            </motion.button>
+
+            {categoriesOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-[#E0D5FA] z-50"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {categories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <motion.button
+                      key={category.slug}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        router.push(`/buyer/${category.slug}`);
+                        setCategoriesOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#5B3DF6] hover:bg-[#E0D5FA] transition first:rounded-t-2xl last:rounded-b-2xl"
+                    >
+                      <Icon size={18} />
+                      {category.name}
+                    </motion.button>
+                  );
+                })}
+              </motion.div>
+            )}
+          </div>
+
           <LogoutButton />
         </nav>
       </div>
@@ -150,6 +226,30 @@ export function NavBar() {
                   {name}
                 </motion.button>
               ))}
+
+              {/* Categories Section in Mobile */}
+              <div className="border-t border-[#E0D5FA] pt-4">
+                <p className="text-sm font-semibold text-[#5B3DF6] px-5 mb-3">Categories</p>
+                {categories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <motion.button
+                      key={category.slug}
+                      whileHover={{ scale: 1.06 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        router.push(`/buyer/${category.slug}`);
+                        setMenuOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-5 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow transition mb-2"
+                    >
+                      <Icon size={20} />
+                      {category.name}
+                    </motion.button>
+                  );
+                })}
+              </div>
+
               <LogoutButton />
             </div>
           </div>
