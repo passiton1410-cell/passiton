@@ -38,20 +38,36 @@ export function NavBar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (categoriesOpen) {
+      const target = event.target as HTMLElement;
+      // Only close if clicking outside the categories dropdown area
+      if (categoriesOpen && target && !target.closest('[data-categories-dropdown]')) {
         setCategoriesOpen(false);
         setSelectedMainCategory(null);
       }
     };
 
     if (categoriesOpen) {
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener('click', handleClickOutside, true);
     }
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside, true);
     };
   }, [categoriesOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [menuOpen]);
 
   const categoryStructure = {
     products: {
@@ -172,11 +188,12 @@ export function NavBar() {
           ))}
 
           {/* Categories Dropdown */}
-          <div className="relative" onClick={(e) => e.stopPropagation()}>
+          <div className="relative" data-categories-dropdown onClick={(e) => e.stopPropagation()}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 setCategoriesOpen(!categoriesOpen);
                 setSelectedMainCategory(null);
@@ -204,7 +221,11 @@ export function NavBar() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => setSelectedMainCategory('products')}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedMainCategory('products');
+                      }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#5B3DF6] hover:bg-[#E0D5FA] transition rounded-t-2xl border-b border-[#E0D5FA]"
                     >
                       <ShoppingBag size={18} />
@@ -214,7 +235,11 @@ export function NavBar() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => setSelectedMainCategory('services')}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedMainCategory('services');
+                      }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#5B3DF6] hover:bg-[#E0D5FA] transition rounded-b-2xl"
                     >
                       <Briefcase size={18} />
@@ -229,7 +254,11 @@ export function NavBar() {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setSelectedMainCategory(null)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelectedMainCategory(null);
+                        }}
                         className="flex items-center gap-2 text-xs text-[#5B3DF6] hover:text-[#4a32d4]"
                       >
                         <ChevronDown size={12} className="rotate-90" />
@@ -246,7 +275,9 @@ export function NavBar() {
                           key={item.slug}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             router.push(item.href);
                             setCategoriesOpen(false);
                             setSelectedMainCategory(null);
@@ -271,18 +302,24 @@ export function NavBar() {
       {/* Mobile Slide-out Menu */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex">
-          <div className="bg-white w-72 h-full shadow-xl flex flex-col p-6 relative animate-slideInLeft">
-            <button
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-[#e0d5fa] transition"
-              onClick={() => {
-                setMenuOpen(false);
-                setMobileCategoryView('main');
-              }}
-              aria-label="Close menu"
-            >
-              <X size={24} />
-            </button>
-            <div className="flex flex-col gap-6 mt-10">
+          <div className="bg-white w-72 h-full shadow-xl flex flex-col relative animate-slideInLeft">
+            {/* Header with close button */}
+            <div className="flex-shrink-0 p-6 border-b border-[#E0D5FA]">
+              <button
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-[#e0d5fa] transition z-10"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setMobileCategoryView('main');
+                }}
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Scrollable content area */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="flex flex-col gap-6 p-6 pb-8">
               {navItems.map(({ name, icon: Icon, href }) => (
                 <motion.button
                   key={name}
@@ -303,24 +340,24 @@ export function NavBar() {
               <div className="border-t border-[#E0D5FA] pt-4">
                 {mobileCategoryView === 'main' ? (
                   <>
-                    <div className="flex items-center justify-between px-5 mb-3">
+                    <div className="flex items-center justify-between mb-3">
                       <p className="text-sm font-semibold text-[#5B3DF6]">Categories</p>
                     </div>
                     <motion.button
-                      whileHover={{ scale: 1.06 }}
-                      whileTap={{ scale: 0.96 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => setMobileCategoryView('products')}
-                      className="flex items-center gap-3 px-5 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow transition mb-2 w-full"
+                      className="flex items-center gap-3 px-4 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow transition mb-3 w-full"
                     >
                       <ShoppingBag size={20} />
                       Products
                       <ChevronDown size={16} className="ml-auto rotate-[-90deg]" />
                     </motion.button>
                     <motion.button
-                      whileHover={{ scale: 1.06 }}
-                      whileTap={{ scale: 0.96 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => setMobileCategoryView('services')}
-                      className="flex items-center gap-3 px-5 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow transition mb-2 w-full"
+                      className="flex items-center gap-3 px-4 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow transition mb-3 w-full"
                     >
                       <Briefcase size={20} />
                       Services
@@ -329,53 +366,57 @@ export function NavBar() {
                   </>
                 ) : (
                   <>
-                    <div className="flex items-center gap-3 px-5 mb-3">
+                    <div className="flex items-center gap-3 mb-4 sticky top-0 bg-white py-2 border-b border-[#E0D5FA]">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setMobileCategoryView('main')}
-                        className="flex items-center gap-2 text-xs text-[#5B3DF6] hover:text-[#4a32d4]"
+                        className="flex items-center gap-2 text-sm text-[#5B3DF6] hover:text-[#4a32d4] font-medium"
                       >
-                        <ChevronDown size={12} className="rotate-90" />
+                        <ChevronDown size={14} className="rotate-90" />
                         Back
                       </motion.button>
                       <p className="text-sm font-semibold text-[#5B3DF6] flex-1">
                         {categoryStructure[mobileCategoryView].name}
                       </p>
                     </div>
-                    {categoryStructure[mobileCategoryView].items.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <motion.button
-                          key={item.slug}
-                          whileHover={{ scale: 1.06 }}
-                          whileTap={{ scale: 0.96 }}
-                          onClick={() => {
-                            router.push(item.href);
-                            setMenuOpen(false);
-                            setMobileCategoryView('main');
-                          }}
-                          className="flex items-center gap-3 px-5 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow transition mb-2 w-full"
-                        >
-                          <Icon size={20} />
-                          {item.name}
-                        </motion.button>
-                      );
-                    })}
+                    <div className="space-y-2">
+                      {categoryStructure[mobileCategoryView].items.map((item, index) => {
+                        const Icon = item.icon;
+                        return (
+                          <motion.button
+                            key={item.slug}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                              router.push(item.href);
+                              setMenuOpen(false);
+                              setMobileCategoryView('main');
+                            }}
+                            className="flex items-center gap-3 px-4 py-3 rounded-full text-[#5B3DF6] font-medium bg-white hover:bg-[#ffe158] hover:text-[#23185B] shadow-sm transition w-full"
+                            style={{
+                              marginBottom: index === categoryStructure[mobileCategoryView].items.length - 1 ? '2rem' : undefined
+                            }}
+                          >
+                            <Icon size={18} />
+                            {item.name}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
                   </>
                 )}
               </div>
 
-              <LogoutButton />
+                <LogoutButton />
+              </div>
             </div>
           </div>
           <div className="flex-1" onClick={() => {
             setMenuOpen(false);
             setMobileCategoryView('main');
           }} />
-            
         </div>
-        
       )}
       
     </header>
