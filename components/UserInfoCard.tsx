@@ -3,6 +3,19 @@
 import { useState, useEffect } from "react";
 import { Pencil, UserRound, CheckCircle } from "lucide-react";
 
+// Helper functions for display formatting
+const getSemesterSuffix = (sem: string) => {
+  const suffixes = ['st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th'];
+  return suffixes[parseInt(sem) - 1] || '';
+};
+
+const getYearDisplay = (year: string) => {
+  if (year === 'graduate') return 'Graduate';
+  if (year === 'postgraduate') return 'Post Graduate';
+  const suffixes = ['st', 'nd', 'rd', 'th', 'th'];
+  return `${year}${suffixes[parseInt(year) - 1] || 'th'} Year`;
+};
+
 interface User {
   fullName: string;
   username: string;
@@ -14,6 +27,10 @@ interface User {
   pincode?: string;
   state?: string;
   city?: string;
+  course?: string;
+  department?: string;
+  semester?: string;
+  year?: string;
 }
 
 export default function UserInfoCard() {
@@ -28,6 +45,10 @@ export default function UserInfoCard() {
     pincode: "",
     state: "",
     city: "",
+    course: "",
+    department: "",
+    semester: "",
+    year: "",
   });
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -47,6 +68,10 @@ export default function UserInfoCard() {
             pincode: data.user.pincode || "",
             state: data.user.state || "",
             city: data.user.city || "",
+            course: data.user.course || "",
+            department: data.user.department || "",
+            semester: data.user.semester || "",
+            year: data.user.year || "",
           });
         }
       });
@@ -262,6 +287,100 @@ export default function UserInfoCard() {
           ) : (
             <p className="text-sm text-gray-800">
               {user.city || "Not added"}
+            </p>
+          )}
+        </div>
+
+        {/* Course */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Course</label>
+          {editing ? (
+            <input
+              type="text"
+              value={form.course}
+              onChange={(e) =>
+                setForm({ ...form, course: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            />
+          ) : (
+            <p className="text-sm text-gray-800">
+              {user.course || "Not added"}
+            </p>
+          )}
+        </div>
+
+        {/* Department */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Department</label>
+          {editing ? (
+            <input
+              type="text"
+              value={form.department}
+              onChange={(e) =>
+                setForm({ ...form, department: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            />
+          ) : (
+            <p className="text-sm text-gray-800">
+              {user.department || "Not added"}
+            </p>
+          )}
+        </div>
+
+        {/* Semester */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Semester</label>
+          {editing ? (
+            <select
+              value={form.semester}
+              onChange={(e) =>
+                setForm({ ...form, semester: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            >
+              <option value="">Select Semester</option>
+              <option value="1">1st Semester</option>
+              <option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option>
+              <option value="4">4th Semester</option>
+              <option value="5">5th Semester</option>
+              <option value="6">6th Semester</option>
+              <option value="7">7th Semester</option>
+              <option value="8">8th Semester</option>
+              <option value="other">Other</option>
+            </select>
+          ) : (
+            <p className="text-sm text-gray-800">
+              {user.semester ? `${user.semester}${user.semester !== 'other' ? getSemesterSuffix(user.semester) + ' Semester' : ''}` : "Not added"}
+            </p>
+          )}
+        </div>
+
+        {/* Year */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Year</label>
+          {editing ? (
+            <select
+              value={form.year}
+              onChange={(e) =>
+                setForm({ ...form, year: e.target.value })
+              }
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B3DF6]"
+            >
+              <option value="">Select Year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+              <option value="5">5th Year</option>
+              <option value="graduate">Graduate</option>
+              <option value="postgraduate">Post Graduate</option>
+            </select>
+          ) : (
+            <p className="text-sm text-gray-800">
+              {user.year ? getYearDisplay(user.year) : "Not added"}
             </p>
           )}
         </div>

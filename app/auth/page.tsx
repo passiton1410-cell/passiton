@@ -34,6 +34,10 @@ export default function AuthPage() {
   const [selectedState, setSelectedState] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [pincode, setPincode] = useState('');
+  const [course, setCourse] = useState('');
+  const [department, setDepartment] = useState('');
+  const [semester, setSemester] = useState('');
+  const [year, setYear] = useState('');
   const [collegeName, setCollegeName] = useState('');
   const [collegeSuggestions, setCollegeSuggestions] = useState<string[]>([]);
   const [showCollegeSuggestions, setShowCollegeSuggestions] = useState(false);
@@ -152,8 +156,8 @@ export default function AuthPage() {
     setStatus('');
     setUserExists(false);
 
-    if (!email || !password || !fullName || !username || !collegeIdUrl || !selectedState || !selectedCity || !collegeName) {
-      setStatus('❌ All fields including college, state, city and ID are required.');
+    if (!email || !password || !fullName || !username || !collegeIdUrl || !selectedState || !selectedCity || !collegeName || !course || !department || !semester || !year) {
+      setStatus('❌ All fields including academic information are required.');
       setLoading(false);
       return;
     }
@@ -199,6 +203,10 @@ export default function AuthPage() {
         personalEmail: personalEmail.trim() || undefined,
         personalId: personalId.trim() || undefined,
         pincode: pincode.trim() || undefined,
+        course: course.trim(),
+        department: department.trim(),
+        semester: semester,
+        year: year,
       }),
       headers: { 'Content-Type': 'application/json' },
     });
@@ -489,6 +497,77 @@ export default function AuthPage() {
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-pink-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <LockKeyhole size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-400" />
+              </div>
+            </div>
+
+            {/* Academic Information Section */}
+            <div className="w-full mb-4">
+              <p className="text-sm text-[#7c689c] mb-3 text-center font-medium">
+                Academic Information (Required)
+              </p>
+              {/* Course and Department */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Course/Program (e.g., B.Tech)"
+                    value={course}
+                    onChange={(e) => setCourse(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-indigo-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+                  />
+                  <GraduationCap size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500" />
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Department (e.g., Computer Science)"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-teal-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+                  />
+                  <UserRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-teal-500" />
+                </div>
+              </div>
+              {/* Semester and Year */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
+                  <select
+                    value={semester}
+                    onChange={(e) => setSemester(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-emerald-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
+                    style={{ color: semester ? '#23185B' : '#a78bfa' }}
+                  >
+                    <option value="" disabled>Select Semester</option>
+                    <option value="1" className="text-[#23185B]">1st Semester</option>
+                    <option value="2" className="text-[#23185B]">2nd Semester</option>
+                    <option value="3" className="text-[#23185B]">3rd Semester</option>
+                    <option value="4" className="text-[#23185B]">4th Semester</option>
+                    <option value="5" className="text-[#23185B]">5th Semester</option>
+                    <option value="6" className="text-[#23185B]">6th Semester</option>
+                    <option value="7" className="text-[#23185B]">7th Semester</option>
+                    <option value="8" className="text-[#23185B]">8th Semester</option>
+                    <option value="other" className="text-[#23185B]">Other</option>
+                  </select>
+                  <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none" />
+                </div>
+                <div className="relative">
+                  <select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-rose-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
+                    style={{ color: year ? '#23185B' : '#a78bfa' }}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    <option value="1" className="text-[#23185B]">1st Year</option>
+                    <option value="2" className="text-[#23185B]">2nd Year</option>
+                    <option value="3" className="text-[#23185B]">3rd Year</option>
+                    <option value="4" className="text-[#23185B]">4th Year</option>
+                    <option value="5" className="text-[#23185B]">5th Year</option>
+                    <option value="graduate" className="text-[#23185B]">Graduate</option>
+                    <option value="postgraduate" className="text-[#23185B]">Post Graduate</option>
+                  </select>
+                  <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-500 pointer-events-none" />
+                </div>
               </div>
             </div>
 

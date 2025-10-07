@@ -30,6 +30,10 @@ export async function GET(req: NextRequest) {
         state: user.state,
         city: user.city,
         pincode: user.pincode,
+        course: user.course,
+        department: user.department,
+        semester: user.semester,
+        year: user.year,
       },
     });
   } catch {

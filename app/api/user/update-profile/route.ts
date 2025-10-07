@@ -19,10 +19,10 @@ export async function PUT(req: NextRequest) {
   }
 
   const userId = decoded._id || decoded.userId;
-  const { fullName, username, collegeIdUrl, mobile, collegeName, pincode, state, city } =
+  const { fullName, username, collegeIdUrl, mobile, collegeName, pincode, state, city, course, department, semester, year } =
     await req.json();
 
-  if (!fullName && !username && !collegeIdUrl && !mobile && !collegeName && !pincode && !state && !city) {
+  if (!fullName && !username && !collegeIdUrl && !mobile && !collegeName && !pincode && !state && !city && !course && !department && !semester && !year) {
     return NextResponse.json(
       { error: "No updates provided" },
       { status: 400 }
@@ -53,6 +53,10 @@ export async function PUT(req: NextRequest) {
         ...(pincode && { pincode }),
         ...(state && { state }),
         ...(city && { city }),
+        ...(course && { course }),
+        ...(department && { department }),
+        ...(semester && { semester }),
+        ...(year && { year }),
       },
       { new: true }
     );
@@ -73,6 +77,10 @@ export async function PUT(req: NextRequest) {
         pincode: user.pincode,
         state: user.state,
         city: user.city,
+        course: user.course,
+        department: user.department,
+        semester: user.semester,
+        year: user.year,
         verified: user.verified,
         userId: user._id,
       },

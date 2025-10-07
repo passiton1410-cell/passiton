@@ -14,6 +14,10 @@ const UserSchema = new Schema({
   state: { type: String, required: true },   // Indian state
   city: { type: String, required: true },    // Indian city
   pincode: { type: String },                 // Pincode
+  course: { type: String },                  // Academic course/program
+  department: { type: String },              // Academic department
+  semester: { type: String },                // Current semester
+  year: { type: String },                    // Academic year
   personalEmail: { type: String },           // optional personal email
   personalId: { type: String },              // optional personal ID
 });
