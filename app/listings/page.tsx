@@ -29,8 +29,8 @@ export default function AllListingsPage() {
       setFiltered(data.products || []);
 
       // Extract unique states and cities from products
-      const uniqueStates = [...new Set(data.products?.map((p: any) => p.state).filter(Boolean))].sort();
-      const uniqueCities = [...new Set(data.products?.map((p: any) => p.city).filter(Boolean))].sort();
+      const uniqueStates = [...new Set(data.products?.map((p: any) => p.state).filter(Boolean) as string[])].sort();
+      const uniqueCities = [...new Set(data.products?.map((p: any) => p.city).filter(Boolean) as string[])].sort();
       setAvailableStates(uniqueStates);
       setAvailableCities(uniqueCities);
     } catch (error) {
