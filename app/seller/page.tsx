@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { PlusCircle, UploadCloud } from "lucide-react";
+import { PlusCircle, UploadCloud, X } from "lucide-react";
 import CollegeAutocomplete from "@/components/CollegeAutocomplete";
 
 // Title validation: 5-60 chars, not only numbers/symbols, not repeated numbers
@@ -36,6 +36,7 @@ export default function SellerPage() {
     price: "",
     category: "",
     image: "",
+    images: [] as string[],
     college: "",
     phone: "",
     description: "",
@@ -55,13 +56,26 @@ export default function SellerPage() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    if (files.length > 4) {
+      setStatus("❌ Maximum 4 images allowed");
+      return;
+    }
+
+    if (formData.images.length + files.length > 4) {
+      setStatus(`❌ Can only add ${4 - formData.images.length} more images`);
+      return;
+    }
+
     setUploading(true);
-    setStatus("Uploading image...");
+    setStatus(`Uploading ${files.length} image(s)...`);
 
     const form = new FormData();
-    form.append("file", file);
+    for (let i = 0; i < files.length; i++) {
+      form.append("files", files[i]);
+    }
 
     const res = await fetch("/api/upload", {
       method: "POST",
@@ -70,17 +84,33 @@ export default function SellerPage() {
 
     const data = await res.json();
     if (res.ok) {
-      setFormData((prev) => ({ ...prev, image: data.secure_url }));
-      setStatus("✅ Image uploaded");
+      const newImages = data.images || [data.secure_url]; // Handle both single and multiple
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...newImages],
+        image: prev.images.length === 0 ? newImages[0] : prev.image, // Keep first image for compatibility
+      }));
+      setStatus(`✅ ${newImages.length} image(s) uploaded successfully`);
     } else {
-      setStatus("❌ Image upload failed");
+      setStatus(`❌ Upload failed: ${data.error}`);
     }
     setUploading(false);
   };
 
+  const removeImage = (indexToRemove: number) => {
+    setFormData((prev) => {
+      const newImages = prev.images.filter((_, index) => index !== indexToRemove);
+      return {
+        ...prev,
+        images: newImages,
+        image: newImages[0] || "", // Update main image field
+      };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { title, price, phone, description, category, image, college } = formData;
+    const { title, price, phone, description, category, image, images, college } = formData;
     const numericPrice = parseInt(price);
 
     if (!isValidTitle(title.trim())) {
@@ -95,8 +125,8 @@ export default function SellerPage() {
       setStatus("❌ Description must be at least 20 characters, no links/emails.");
       return;
     }
-    if (!image) {
-      setStatus("❌ Please upload a product image.");
+    if (images.length === 0) {
+      setStatus("❌ Please upload at least 1 product image.");
       return;
     }
     if (!college.trim()) {
@@ -116,7 +146,11 @@ export default function SellerPage() {
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, price: numericPrice }),
+        body: JSON.stringify({
+          ...formData,
+          price: numericPrice,
+          images: images.length > 0 ? images : undefined // Send images array
+        }),
       });
       if (res.ok) {
         setStatus("✅ Product listed successfully!");
@@ -125,6 +159,7 @@ export default function SellerPage() {
           price: "",
           category: "",
           image: "",
+          images: [],
           college: "",
           phone: "",
           description: "",
@@ -228,27 +263,58 @@ export default function SellerPage() {
           {/* IMAGE UPLOAD */}
           <div className="w-full flex flex-col gap-2 pt-2">
             <label className="text-base font-bold text-[#5B3DF6] flex items-center gap-1">
-              <UploadCloud size={18} /> Product Image
+              <UploadCloud size={18} /> Product Images ({formData.images.length}/4)
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="w-full px-5 py-2 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] file:font-bold file:px-5 file:py-2 cursor-pointer"
-              disabled={uploading}
-            />
-            {formData.image && (
+            <p className="text-sm text-[#7c689c] mb-2">
+              Upload 1-4 images of your product. First image will be the main display image.
+            </p>
+
+            {formData.images.length < 4 && (
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="w-full px-5 py-2 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] file:font-bold file:px-5 file:py-2 cursor-pointer"
+                disabled={uploading}
+              />
+            )}
+
+            {/* Image Preview Grid */}
+            {formData.images.length > 0 && (
               <motion.div
-                className="mt-2"
+                className="mt-4 grid grid-cols-2 gap-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.28 }}
               >
-                <img
-                  src={formData.image}
-                  alt="Preview"
-                  className="w-full h-40 object-contain bg-[#ffe7fc] rounded-2xl shadow border-2 border-[#f3e8ff]"
-                />
+                {formData.images.map((imageUrl, index) => (
+                  <motion.div
+                    key={index}
+                    className="relative group"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`Product image ${index + 1}`}
+                      className="w-full h-32 object-cover bg-[#ffe7fc] rounded-xl shadow border-2 border-[#f3e8ff]"
+                    />
+                    {index === 0 && (
+                      <div className="absolute top-2 left-2 bg-[#5B3DF6] text-white text-xs px-2 py-1 rounded-full font-semibold">
+                        Main
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={14} />
+                    </button>
+                  </motion.div>
+                ))}
               </motion.div>
             )}
           </div>

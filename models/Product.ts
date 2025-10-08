@@ -4,7 +4,18 @@ const ProductSchema = new Schema({
   title: { type: String, required: true },
   price: { type: String, required: true },
   category: { type: String, required: true }, // suggested: electronics, furniture, clothing, stationary, other
-  image: { type: String, required: true },
+  images: {
+    type: [String],
+    required: true,
+    validate: {
+      validator: function(arr: string[]) {
+        return arr.length >= 1 && arr.length <= 4;
+      },
+      message: 'Must have between 1 and 4 images'
+    }
+  },
+  // Keep the old image field for backward compatibility during migration
+  image: { type: String },
   college: { type: String, required: true },
   city: { type: String, required: true }, // location info
   state: { type: String, required: true }, // location info

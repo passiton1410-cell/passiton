@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   }
 
   const data = await req.json();
-  const { title, price, category, image, phone, college } = data;
+  const { title, price, category, image, images, phone, college } = data;
 
   // ✅ Backend validation
   if (!title || title.trim().length < 3) {
@@ -71,7 +71,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Phone number must be 10 digits.' }, { status: 400 });
   }
 
-  if (!category || !image || !college) {
+  // Handle both single image and multiple images
+  let productImages: string[] = [];
+
+  if (images && Array.isArray(images) && images.length > 0) {
+    // New multiple images format
+    if (images.length < 1 || images.length > 4) {
+      return NextResponse.json({ error: 'Must have between 1 and 4 images.' }, { status: 400 });
+    }
+    productImages = images;
+  } else if (image) {
+    // Backward compatibility - single image
+    productImages = [image];
+  } else {
+    return NextResponse.json({ error: 'At least one image is required.' }, { status: 400 });
+  }
+
+  if (!category || !college) {
     return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
   }
 
@@ -79,7 +95,8 @@ export async function POST(req: Request) {
     title: title.trim(),
     price: numericPrice,
     category,
-    image,
+    images: productImages,  // New multiple images field
+    image: productImages[0], // Keep first image for backward compatibility
     phone,
     college,
     city: user.city,      // Auto-fetch from user profile
@@ -121,7 +138,7 @@ export async function GET(req: NextRequest) {
     }
 
     const products = await Product.find(query)
-      .select("title image price college category email phone sold city state")
+      .select("title image images price college category email phone sold city state")
       .sort({ createdAt: -1 })
       .limit(50); // Limit to 50 products for performance
 

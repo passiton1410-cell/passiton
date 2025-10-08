@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props {
   product: {
     _id: string;
     title: string;
     image: string;
+    images?: string[];
     price: string;
     college: string;
     category: string;
@@ -30,6 +33,29 @@ const categoryColor = (cat: string) => {
 };
 
 export function ProductCard({ product }: Props) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Get all available images (prioritize images array, fallback to single image)
+  const allImages = product.images && product.images.length > 0
+    ? product.images
+    : product.image
+      ? [product.image]
+      : [];
+
+  const hasMultipleImages = allImages.length > 1;
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  };
+
   //console.log(product); // Debug: show product details
   return (
     //<div style={{display: 'none'}}>{JSON.stringify(product)}</div>
@@ -59,12 +85,60 @@ export function ProductCard({ product }: Props) {
         )}
         <div className="px-4 pt-4">
           <div className="w-full h-44 flex justify-center items-center rounded-2xl bg-[#faf7ed] relative overflow-hidden shadow-md border-2 border-[#f3e8ff]">
-            <img
-              src={product.image}
-              alt={product.title}
-              loading="lazy"
-              className="object-contain h-40 w-40 rounded-xl transition-all duration-300 group-hover:opacity-90"
-            />
+            {allImages.length > 0 ? (
+              <>
+                <img
+                  src={allImages[currentImageIndex]}
+                  alt={`${product.title} - Image ${currentImageIndex + 1}`}
+                  loading="lazy"
+                  className="object-contain h-40 w-40 rounded-xl transition-all duration-300 group-hover:opacity-90"
+                />
+
+                {/* Navigation arrows for multiple images */}
+                {hasMultipleImages && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+
+                    {/* Image dots indicator */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                      {allImages.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            index === currentImageIndex
+                              ? 'bg-[#5B3DF6]'
+                              : 'bg-white/60'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* Image counter */}
+                {hasMultipleImages && (
+                  <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+                    {currentImageIndex + 1}/{allImages.length}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-[#a78bfa] text-center">
+                <div className="text-2xl mb-2">📷</div>
+                <div className="text-sm">No image</div>
+              </div>
+            )}
           </div>
         </div>
         <div className="px-5 pt-4 space-y-2">
