@@ -36,11 +36,21 @@ export function ProductCard({ product }: Props) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Get all available images (prioritize images array, fallback to single image)
-  const allImages = product.images && product.images.length > 0
-    ? product.images
+  const allImages = product.images && Array.isArray(product.images) && product.images.length > 0
+    ? product.images.filter(Boolean) // Remove any empty strings
     : product.image
       ? [product.image]
       : [];
+
+  console.log('🔍 ProductCard Debug:', {
+    productId: product._id,
+    title: product.title,
+    hasImages: !!product.images,
+    imagesLength: product.images?.length || 0,
+    hasImage: !!product.image,
+    allImagesLength: allImages.length,
+    allImages: allImages
+  });
 
   const hasMultipleImages = allImages.length > 1;
 

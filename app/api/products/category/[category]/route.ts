@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     }
 
     const products = await Product.find(query)
-      .select("title image price college category email phone sold city state")
+      .select("title image images price college category email phone sold city state")
       .sort({ createdAt: -1 });
 
     console.log(`🔍 DEBUG: Category "${category}" - Found ${products.length} products`);

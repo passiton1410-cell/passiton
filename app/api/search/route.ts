@@ -30,7 +30,7 @@ const products = await Product.find({
   ],
   // sold: { $ne: true } // COMMENTED OUT TO SEE ALL PRODUCTS
 })
-.select("title image price college category email phone sold city state")
+.select("title image images price college category email phone sold city state")
 .sort({ createdAt: -1 })
 .limit(50);
 
