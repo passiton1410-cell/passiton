@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props {
   product: {
@@ -33,38 +31,12 @@ const categoryColor = (cat: string) => {
 };
 
 export function ProductCard({ product }: Props) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // Get the main display image (first image from array, or fallback to single image)
+  const displayImage = product.images && Array.isArray(product.images) && product.images.length > 0
+    ? product.images[0] // Show first image as main
+    : product.image || null;
 
-  // Get all available images (prioritize images array, fallback to single image)
-  const allImages = product.images && Array.isArray(product.images) && product.images.length > 0
-    ? product.images.filter(Boolean) // Remove any empty strings
-    : product.image
-      ? [product.image]
-      : [];
-
-  console.log('🔍 ProductCard Debug:', {
-    productId: product._id,
-    title: product.title,
-    hasImages: !!product.images,
-    imagesLength: product.images?.length || 0,
-    hasImage: !!product.image,
-    allImagesLength: allImages.length,
-    allImages: allImages
-  });
-
-  const hasMultipleImages = allImages.length > 1;
-
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-  };
-
-  const prevImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
-  };
+  const hasMultipleImages = product.images && product.images.length > 1;
 
   //console.log(product); // Debug: show product details
   return (
@@ -95,51 +67,19 @@ export function ProductCard({ product }: Props) {
         )}
         <div className="px-4 pt-4">
           <div className="w-full h-44 flex justify-center items-center rounded-2xl bg-[#faf7ed] relative overflow-hidden shadow-md border-2 border-[#f3e8ff]">
-            {allImages.length > 0 ? (
+            {displayImage ? (
               <>
                 <img
-                  src={allImages[currentImageIndex]}
-                  alt={`${product.title} - Image ${currentImageIndex + 1}`}
+                  src={displayImage}
+                  alt={product.title}
                   loading="lazy"
                   className="object-contain h-40 w-40 rounded-xl transition-all duration-300 group-hover:opacity-90"
                 />
 
-                {/* Navigation arrows for multiple images */}
+                {/* Multiple images indicator */}
                 {hasMultipleImages && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    >
-                      <ChevronLeft size={16} />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    >
-                      <ChevronRight size={16} />
-                    </button>
-
-                    {/* Image dots indicator */}
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                      {allImages.map((_, index) => (
-                        <div
-                          key={index}
-                          className={`w-2 h-2 rounded-full transition-colors ${
-                            index === currentImageIndex
-                              ? 'bg-[#5B3DF6]'
-                              : 'bg-white/60'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {/* Image counter */}
-                {hasMultipleImages && (
-                  <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-                    {currentImageIndex + 1}/{allImages.length}
+                  <div className="absolute top-2 right-2 bg-[#5B3DF6] text-white text-xs px-2 py-1 rounded-full font-semibold">
+                    +{product.images!.length - 1}
                   </div>
                 )}
               </>

@@ -1,7 +1,9 @@
-import { use } from "react";
+"use client";
+
+import { use, useState } from "react";
 import { connectToDatabase } from "@/lib/db";
 import { Product } from "@/models/Product";
-import { MessageCircle, Mail, Phone } from "lucide-react";
+import { MessageCircle, Mail, Phone, ChevronLeft, ChevronRight } from "lucide-react";
 import { isValidObjectId } from "mongoose";
 
 // Helper for colored category badge
@@ -28,6 +30,7 @@ type ProductType = {
   price: string;
   category: string;
   image: string;
+  images?: string[];
   college: string;
   phone?: string;
   email?: string;
@@ -53,6 +56,24 @@ export default function ProductDetail({
 }) {
   const { id } = use(params);
   const product = use(getProduct(id));
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Get all available images (prioritize images array, fallback to single image)
+  const allImages = product && product.images && Array.isArray(product.images) && product.images.length > 0
+    ? product.images.filter(Boolean)
+    : product && product.image
+      ? [product.image]
+      : [];
+
+  const hasMultipleImages = allImages.length > 1;
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  };
 
   if (!product) {
     return (
@@ -89,12 +110,71 @@ export default function ProductDetail({
           </span>
         )}
         <div className="w-full flex flex-col items-center gap-3">
-          <div className="w-64 h-64 bg-[#faf7ed] rounded-2xl shadow border-2 border-[#f3e8ff] flex items-center justify-center mb-6 overflow-hidden">
-            <img
-              src={product.image}
-              alt={product.title}
-              className="object-contain w-60 h-60 rounded-xl shadow"
-            />
+          {/* Image Gallery */}
+          <div className="w-full max-w-sm">
+            {/* Main Image Display */}
+            <div className="relative w-full h-80 bg-[#faf7ed] rounded-2xl shadow border-2 border-[#f3e8ff] flex items-center justify-center mb-4 overflow-hidden">
+              {allImages.length > 0 ? (
+                <>
+                  <img
+                    src={allImages[currentImageIndex]}
+                    alt={`${product.title} - Image ${currentImageIndex + 1}`}
+                    className="object-contain w-full h-full rounded-xl shadow"
+                  />
+
+                  {/* Navigation arrows */}
+                  {hasMultipleImages && (
+                    <>
+                      <button
+                        onClick={prevImage}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white rounded-full p-2 transition-all duration-200 z-10"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                      <button
+                        onClick={nextImage}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white rounded-full p-2 transition-all duration-200 z-10"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+
+                      {/* Image counter */}
+                      <div className="absolute top-3 right-3 bg-black/70 text-white text-sm px-3 py-1 rounded-full">
+                        {currentImageIndex + 1} / {allImages.length}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className="text-[#a78bfa] text-center">
+                  <div className="text-4xl mb-2">📷</div>
+                  <div className="text-sm">No image available</div>
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail Navigation */}
+            {hasMultipleImages && (
+              <div className="flex gap-2 justify-center mb-4 overflow-x-auto py-2">
+                {allImages.map((imageUrl, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                      index === currentImageIndex
+                        ? 'border-[#5B3DF6] ring-2 ring-[#5B3DF6]/30'
+                        : 'border-gray-300 hover:border-[#5B3DF6]/50'
+                    }`}
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`${product.title} thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#5B3DF6] mb-1 text-center">
             {product.title}
