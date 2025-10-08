@@ -1,10 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
-import { connectToDatabase } from "@/lib/db";
-import { Product } from "@/models/Product";
+import { useState, useEffect } from "react";
 import { MessageCircle, Mail, Phone, ChevronLeft, ChevronRight } from "lucide-react";
-import { isValidObjectId } from "mongoose";
+import { useParams } from "next/navigation";
 
 // Helper for colored category badge
 const categoryColor = (cat: string) => {
@@ -37,26 +35,38 @@ type ProductType = {
   sold?: boolean;
 };
 
-async function getProduct(id: string): Promise<ProductType | null> {
-  // Validate ObjectId format before querying database
-  if (!isValidObjectId(id)) {
-    console.log(`Invalid ObjectId format: "${id}"`);
-    return null;
-  }
+// Remove the server-side function - we'll fetch on client side
 
-  await connectToDatabase();
-  const product = await Product.findById(id).lean();
-  return product as ProductType | null;
-}
-
-export default function ProductDetail({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const product = use(getProduct(id));
+export default function ProductDetail() {
+  const params = useParams();
+  const id = params.id as string;
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/products/${id}`);
+        if (!response.ok) {
+          throw new Error('Product not found');
+        }
+        const data = await response.json();
+        setProduct(data.product);
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Product not found');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   // Get all available images (prioritize images array, fallback to single image)
   const allImages = product && product.images && Array.isArray(product.images) && product.images.length > 0
@@ -75,7 +85,18 @@ export default function ProductDetail({
     setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
   };
 
-  if (!product) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#faf7ed] flex items-center justify-center">
+        <div className="bg-white/90 rounded-2xl px-8 py-12 shadow-xl border border-[#E0D5FA] flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5B3DF6] mb-4"></div>
+          <p className="text-lg font-medium text-[#5B3DF6]">Loading product...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
     return (
       <div className="min-h-screen bg-[#faf7ed] flex items-center justify-center">
         <div className="bg-white/90 rounded-2xl px-8 py-12 shadow-xl border border-pink-300 flex flex-col items-center">
