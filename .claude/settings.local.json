@@ -6,7 +6,9 @@
       "Bash(npm install)",
       "Bash(npx tsc:*)",
       "Bash(timeout 30 npm run build)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx next:*)"
     ],
     "deny": [],
     "ask": []
