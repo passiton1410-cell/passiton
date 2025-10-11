@@ -103,6 +103,7 @@ export async function POST(req: Request) {
     state: user.state,    // Auto-fetch from user profile
     email: user.email,
     userId: user._id,
+    approvalStatus: 'pending', // Require admin approval before going public
   });
 
   return NextResponse.json({ success: true, product });

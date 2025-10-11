@@ -108,7 +108,8 @@ export async function POST(req: NextRequest) {
       salary: salary?.trim() || '',
       duration: duration?.trim() || '',
       userId,
-      active: true
+      active: true,
+      approvalStatus: 'pending' // Require admin approval before going public
     });
 
     return NextResponse.json({

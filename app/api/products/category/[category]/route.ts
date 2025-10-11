@@ -19,10 +19,11 @@ export async function GET(request: NextRequest) {
     const state = searchParams.get('state');
     const city = searchParams.get('city');
 
-    // Build query object - TEMPORARILY REMOVING SOLD FILTER FOR DEBUGGING
+    // Build query object - only show approved products
     const query: any = {
       category: { $regex: new RegExp(`^${category}$`, "i") },
-      // sold: { $ne: true }, // COMMENTED OUT TO SEE ALL PRODUCTS
+      sold: { $ne: true }, // Not sold
+      approvalStatus: 'approved' // Only explicitly approved products
     };
 
     // Only add filters if user has actually selected something meaningful

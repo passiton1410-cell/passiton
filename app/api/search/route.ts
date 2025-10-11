@@ -22,13 +22,13 @@ export async function GET(request: NextRequest) {
     const regex = new RegExp(`.*${safeQuery}.*`, 'i');
 
 const products = await Product.find({
-  // TEMPORARILY REMOVING SOLD FILTER FOR DEBUGGING
   $or: [
     { title: regex },
     { category: regex },
     { college: regex },
   ],
-  // sold: { $ne: true } // COMMENTED OUT TO SEE ALL PRODUCTS
+  sold: { $ne: true }, // Not sold
+  approvalStatus: 'approved' // Only explicitly approved products
 })
 .select("title image images price college category email phone sold city state")
 .sort({ createdAt: -1 })
