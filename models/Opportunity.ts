@@ -17,6 +17,14 @@ const OpportunitySchema = new Schema({
   duration: { type: String }, // optional duration (e.g., "3 months", "full-time")
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   active: { type: Boolean, default: true }, // similar to 'sold' in Product
+  approvalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
+  rejectionReason: { type: String }, // Optional reason for rejection
+  approvedBy: { type: Schema.Types.ObjectId, ref: 'User' }, // Admin who approved/rejected
+  approvedAt: { type: Date }, // When it was approved/rejected
   createdAt: { type: Date, default: Date.now },
 });
 

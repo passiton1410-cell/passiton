@@ -27,6 +27,7 @@ export async function GET() {
 
     // Fetch opportunities posted by this user
     const opportunities = await Opportunity.find({ userId })
+      .select('title description type company location city state college email phone requirements deadline salary duration active approvalStatus createdAt')
       .sort({ createdAt: -1 })
       .lean();
 

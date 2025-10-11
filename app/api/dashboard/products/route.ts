@@ -17,6 +17,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
 
-  const products = await Product.find({ userId }).sort({ createdAt: -1 }).lean();
+  const products = await Product.find({ userId })
+    .select('title price category image images college city state email phone sold approvalStatus createdAt')
+    .sort({ createdAt: -1 })
+    .lean();
   return NextResponse.json({ products });
 }

@@ -119,9 +119,10 @@ export async function GET(req: NextRequest) {
     const city = searchParams.get('city');
     const category = searchParams.get('category');
 
-    // Build query object - TEMPORARILY REMOVING SOLD FILTER FOR DEBUGGING
+    // Build query object - only show approved products
     const query: any = {
-      // sold: { $ne: true }, // COMMENTED OUT TO SEE ALL PRODUCTS
+      sold: { $ne: true }, // Not sold
+      approvalStatus: 'approved' // Only approved products
     };
 
     // Only add filters if user has actually selected something meaningful

@@ -23,6 +23,14 @@ const ProductSchema = new Schema({
   phone: { type: String, required: true }, // ✅ new
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   sold: { type: Boolean, default: false },
+  approvalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
+  rejectionReason: { type: String }, // Optional reason for rejection
+  approvedBy: { type: Schema.Types.ObjectId, ref: 'User' }, // Admin who approved/rejected
+  approvedAt: { type: Date }, // When it was approved/rejected
   createdAt: { type: Date, default: Date.now },
 });
 

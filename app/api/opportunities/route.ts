@@ -9,8 +9,11 @@ export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    // Get all active opportunities with user details
-    const opportunities = await Opportunity.find({ active: true })
+    // Get all active and approved opportunities with user details
+    const opportunities = await Opportunity.find({
+      active: true,
+      approvalStatus: 'approved'
+    })
       .populate('userId', 'fullName collegeName')
       .sort({ createdAt: -1 })
       .lean();

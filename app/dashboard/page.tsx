@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { CheckCircle, XCircle, Loader2, Eye, Heart, Briefcase, Trash2, Calendar } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, Eye, Heart, Briefcase, Trash2, Calendar, Clock, AlertCircle } from 'lucide-react';
 import UserInfoCard from '@/components/UserInfoCard';
 
 type Product = {
@@ -15,6 +15,7 @@ type Product = {
   image: string;
   college: string;
   sold: boolean;
+  approvalStatus: 'pending' | 'approved' | 'rejected';
   createdAt: string;
 };
 
@@ -35,6 +36,7 @@ type Opportunity = {
   salary?: string;
   duration?: string;
   active: boolean;
+  approvalStatus: 'pending' | 'approved' | 'rejected';
   createdAt: string;
 };
 
@@ -47,6 +49,72 @@ export default function DashboardPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
   const router = useRouter();
+
+  const getProductStatusBadge = (product: Product) => {
+    if (product.sold) {
+      return (
+        <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-200 text-green-700 font-bold text-xs">
+          <CheckCircle size={16} /> Sold
+        </span>
+      );
+    }
+
+    switch (product.approvalStatus) {
+      case 'approved':
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs">
+            <Eye size={16} /> Active
+          </span>
+        );
+      case 'pending':
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-bold text-xs">
+            <Clock size={16} /> Pending
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-700 font-bold text-xs">
+            <XCircle size={16} /> Rejected
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getOpportunityStatusBadge = (opportunity: Opportunity) => {
+    if (!opportunity.active) {
+      return (
+        <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 text-gray-600 font-bold text-xs">
+          <XCircle size={14} /> Inactive
+        </span>
+      );
+    }
+
+    switch (opportunity.approvalStatus) {
+      case 'approved':
+        return (
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 font-bold text-xs">
+            <CheckCircle size={14} /> Active
+          </span>
+        );
+      case 'pending':
+        return (
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-bold text-xs">
+            <Clock size={14} /> Pending
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 font-bold text-xs">
+            <XCircle size={14} /> Rejected
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     // Fetch products
@@ -159,21 +227,14 @@ export default function DashboardPage() {
               <motion.div
                 key={product._id}
                 className={`flex flex-col items-center bg-[#f7f4e8] shadow-sm rounded-xl p-6 border-2 transition-transform hover:scale-105 relative ${
-                  product.sold ? 'opacity-60' : ''
+                  product.sold || product.approvalStatus === 'rejected' ? 'opacity-60' :
+                  product.approvalStatus === 'pending' ? 'opacity-80' : ''
                 }`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
               >
                 <div className="w-full flex justify-end absolute top-3 right-3">
-                  {product.sold ? (
-                    <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-200 text-green-700 font-bold text-xs">
-                      <CheckCircle size={16} /> Sold
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-bold text-xs">
-                      <Eye size={16} /> Active
-                    </span>
-                  )}
+                  {getProductStatusBadge(product)}
                 </div>
                 <Image
                   src={product.image}
@@ -270,7 +331,10 @@ export default function DashboardPage() {
             {opportunities.map(opportunity => (
               <motion.div
                 key={opportunity._id}
-                className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-100 hover:border-blue-200 transition-all hover:shadow-lg"
+                className={`bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-100 hover:border-blue-200 transition-all hover:shadow-lg ${
+                  !opportunity.active || opportunity.approvalStatus === 'rejected' ? 'opacity-60' :
+                  opportunity.approvalStatus === 'pending' ? 'opacity-80' : ''
+                }`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -283,15 +347,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {opportunity.active ? (
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 font-bold text-xs">
-                        <CheckCircle size={14} /> Active
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 text-gray-600 font-bold text-xs">
-                        <XCircle size={14} /> Inactive
-                      </span>
-                    )}
+                    {getOpportunityStatusBadge(opportunity)}
                   </div>
                 </div>
 
