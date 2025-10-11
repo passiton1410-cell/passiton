@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
     // Build query object - only show approved products
     const query: any = {
       sold: { $ne: true }, // Not sold
-      approvalStatus: 'approved' // Only approved products
+      approvalStatus: 'approved' // Only explicitly approved products
     };
 
     // Only add filters if user has actually selected something meaningful
