@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { LockKeyhole, MailCheck, Loader2, KeyRound } from 'lucide-react';
+import { LockKeyhole, MailCheck, Loader2, KeyRound, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   // Password reset states
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const [resetEmail, setResetEmail] = useState('');
   const [resetOtp, setResetOtp] = useState('');
   const [resetNewPwd, setResetNewPwd] = useState('');
+  const [showResetNewPwd, setShowResetNewPwd] = useState(false);
   const [resetStatus, setResetStatus] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
 
@@ -164,13 +166,21 @@ export default function LoginPage() {
         <div className="w-full mb-3">
           <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-pink-400 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+              className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-pink-400 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-16"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-pink-400 hover:text-pink-600 transition-colors p-1"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
             <LockKeyhole size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-400" />
           </div>
         </div>
@@ -254,13 +264,23 @@ export default function LoginPage() {
               )}
               {resetStep === "set" && (
                 <>
-                  <input
-                    type="password"
-                    value={resetNewPwd}
-                    onChange={e => setResetNewPwd(e.target.value)}
-                    placeholder="Enter new password"
-                    className="w-full px-4 py-3 rounded-full border-2 border-blue-200 text-gray-700 font-semibold bg-[#f7f5fe] focus:outline-none mb-1"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showResetNewPwd ? "text" : "password"}
+                      value={resetNewPwd}
+                      onChange={e => setResetNewPwd(e.target.value)}
+                      placeholder="Enter new password"
+                      className="w-full px-4 py-3 rounded-full border-2 border-blue-200 text-gray-700 font-semibold bg-[#f7f5fe] focus:outline-none mb-1 pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResetNewPwd(!showResetNewPwd)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors p-1"
+                      tabIndex={-1}
+                    >
+                      {showResetNewPwd ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
                   <button
                     className="w-full py-3 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold mt-1 text-base"
                     disabled={resetLoading}

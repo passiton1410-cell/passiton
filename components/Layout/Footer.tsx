@@ -1,8 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Linkedin, Mail } from "lucide-react";
+import { Instagram, Linkedin, Mail, MessageCircle } from "lucide-react";
 
 export default function Footer() {
+  // Function to generate WhatsApp link
+  const getWhatsAppLink = () => {
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    if (!whatsappNumber) return '#';
+
+    // Remove any non-numeric characters except + for country code
+    const cleanNumber = whatsappNumber.replace(/[^\d+]/g, '');
+    // Default message when user clicks WhatsApp
+    const message = "Hi! I found your contact through PassitOn website. I'd like to get in touch.";
+
+    return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+  };
+
   return (
     <footer className="w-full bg-[#f8f4f0] text-[#3a2f45] px-6 py-12 font-[Inter,sans-serif]">
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 sm:place-items-center md:place-items-start">
@@ -51,6 +64,14 @@ export default function Footer() {
             </a>
             <a href="mailto:hi@passiton.cash" target="_blank" rel="noopener noreferrer">
               <Mail className="w-5 h-5 hover:text-[#aa7bb8] transition-colors" />
+            </a>
+            <a
+              href={getWhatsAppLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Contact us on WhatsApp"
+            >
+              <MessageCircle className="w-5 h-5 hover:text-[#aa7bb8] transition-colors" />
             </a>
             <a href="https://instagram.com/passiton.cash" target="_blank" rel="noopener noreferrer">
               <Instagram className="w-5 h-5 hover:text-[#aa7bb8] transition-colors" />
