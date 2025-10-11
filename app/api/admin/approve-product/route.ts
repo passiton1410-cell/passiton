@@ -5,6 +5,8 @@ import { User } from '@/models/User';
 import { Product } from '@/models/Product';
 
 export async function POST(req: NextRequest) {
+  let action = ''; // Declare action variable outside try block
+
   try {
     // Check if current user is admin
     const token = req.cookies.get('token')?.value;
@@ -20,7 +22,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    const { productId, action, rejectionReason } = await req.json();
+    const data = await req.json();
+    const { productId, rejectionReason } = data;
+    action = data.action;
 
     if (!productId || !action) {
       return NextResponse.json({ error: 'Product ID and action are required' }, { status: 400 });
