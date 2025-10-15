@@ -210,6 +210,7 @@ export default function AuthPage() {
         department: department.trim(),
         semester: semester,
         year: year,
+        termsAccepted: tncChecked,
       }),
       headers: { 'Content-Type': 'application/json' },
     });
@@ -746,22 +747,129 @@ export default function AuthPage() {
             <h3 className="text-2xl font-semibold text-[#5B3DF6] mb-3">
               Terms &amp; Conditions
             </h3>
-            <div className="overflow-y-auto text-base text-[#23185B] max-h-[60vh] pr-2">
-              {/* Put your full legal T&C here */}
-              <ul className="list-decimal ml-6 space-y-2">
-                <li>This platform is only for college students with valid identification.</li>
-                <li>Upload only authentic student identification. Fake documents will result in permanent ban.</li>
-                <li>Your college email will be used for identity verification.</li>
-                <li>By signing up, you agree to receive communications from us.</li>
-                <li>Abuse, spamming, or any policy violation will subject your account to suspension or removal.</li>
-                <li>
-                  Your data is handled as per our privacy policy.
-                  See details at <span className="underline text-[#5B3DF6]"><a href="https://www.passiton.cash/terms">passiton.cash/terms</a></span>.
-                </li>
-                <li>
-                  For detailed terms or concerns, contact support.
-                </li>
-              </ul>
+            <div className="overflow-y-auto text-xs text-[#23185B] max-h-[65vh] pr-2 space-y-3">
+              <div className="text-center mb-4">
+                <h4 className="font-bold text-sm text-[#5B3DF6]">PassitOn: Comprehensive Terms and Conditions</h4>
+                <p className="text-xs text-gray-600 mt-1">Please read carefully before accepting</p>
+              </div>
+
+              <div>
+                <p><strong>1. Definitions and General Scope</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li><strong>Platform:</strong> PassitOn is an online marketplace connecting verified students for buying, selling, and exchanging goods and services within educational campuses.</li>
+                  <li><strong>Users:</strong> Includes both buyers and sellers, who must be currently affiliated with a recognized institution.</li>
+                  <li><strong>Agreement:</strong> By registering, accessing, or interacting with PassitOn, users consent to all terms, privacy, and policies outlined below. These terms may be updated at any time; continued use implies acceptance of updates.</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>2. User Eligibility, Registration & Account Security</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>Users must be students of recognised and registered educational institutions. Proof may be required during signup/registration or at any time.</li>
+                  <li>Users must be 18 years or older. Students below 18 require guardian consent.</li>
+                  <li>Registration: Accurate personal information, including valid institutional email and, where required, student ID must be provided.</li>
+                  <li>Account Responsibility: Users are responsible for safeguarding their credentials. Any misuse, unauthorized access, or suspicious activity must be reported immediately to PassitOn.</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>3. Prohibited Items and Conduct</strong></p>
+                <p className="text-xs mt-1 font-medium">Users must NOT list, trade, or promote any of the following:</p>
+                <div className="ml-2 mt-2 space-y-2">
+                  <div>
+                    <p className="font-medium text-xs">• Illegal/Narcotic Substances:</p>
+                    <p className="text-xs ml-2">Drugs, illegal alcohol, tobacco products, e-cigarettes, vapes, electronic nicotine delivery systems</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-xs">• Weapons and Explosives:</p>
+                    <p className="text-xs ml-2">Firearms, ammunition, knives, explosives, fireworks</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-xs">• Pornographic/Offensive Material:</p>
+                    <p className="text-xs ml-2">Adult content, hate speech, defamatory materials</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-xs">• Counterfeit/Pirated Goods:</p>
+                    <p className="text-xs ml-2">Fake branded products, pirated software, unauthorized replicas</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-xs">• Medical Items:</p>
+                    <p className="text-xs ml-2">Prescription medicines, controlled substances, medical equipment without certification</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-xs">• Political/Religious Activities:</p>
+                    <p className="text-xs ml-2">Political campaigning, religious preaching, discriminatory content</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p><strong>4. Platform Fees and Payments</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>Basic Usage: PassitOn does not charge fees for standard listing or buying</li>
+                  <li>Transaction Handling: The platform does not process payments. Transactions are strictly between buyer and seller</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>5. Shipping and Delivery</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>PassitOn does not provide delivery or logistics services</li>
+                  <li>All arrangements for exchange are solely between buyer and seller</li>
+                  <li>Campus exchanges are strongly recommended for safety</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>6. Returns and Refunds</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>Returns and refunds must be settled directly between users</li>
+                  <li>All promotional purchases are final and non-refundable</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>7. Dispute Resolution</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>Issues must be reported within 7 days via email to hi@passiton.cash</li>
+                  <li>PassitOn may assist informally but is not an arbitrator</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>8. Privacy and Data Protection</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>Minimal data collected for operations - never sold to third parties</li>
+                  <li>Standard security measures including encryption employed</li>
+                  <li>Information may be shared with authorities as required by law</li>
+                </ul>
+              </div>
+
+              <div>
+                <p><strong>9. Limitation of Liability</strong></p>
+                <ul className="list-disc ml-4 mt-1 space-y-1 text-xs">
+                  <li>PassitOn is a facilitator only, not a guarantor of transactions</li>
+                  <li>Platform liability is limited to the extent permitted by law</li>
+                  <li>Users agree to indemnify PassitOn for misuse of the platform</li>
+                </ul>
+              </div>
+
+              <div className="bg-red-50 p-3 rounded-lg border-l-4 border-red-400">
+                <p className="font-bold text-xs text-red-800">Final Disclaimer</p>
+                <p className="text-xs text-red-700 mt-1">PassitOn is not responsible for fraud, disputes, or the outcome of any user transaction. Users transact AT THEIR OWN RISK and must observe all safety precautions, legal guidelines, and institutional policies. Violation can lead to account suspension or permanent ban.</p>
+              </div>
+
+              <div className="mt-4 text-center bg-[#faf7ed] p-3 rounded-lg">
+                <p className="text-xs font-medium">
+                  Questions? Contact us at <span className="text-[#D93D04] font-bold">hi@passiton.cash</span>
+                </p>
+                <p className="text-xs mt-2 text-gray-600">
+                  Complete terms: <a href="/terms" className="underline text-[#5B3DF6] font-medium" target="_blank">passiton.cash/terms</a>
+                </p>
+                <p className="text-xs mt-2 text-[#5B3DF6] font-medium">
+                  By using PassitOn, you affirm your thorough understanding and agreement with these terms and conditions.
+                </p>
+              </div>
             </div>
             <button
               className="absolute top-3 right-5 text-[#5B3DF6] text-2xl font-extrabold hover:text-[#6C4AB6] focus:outline-none"

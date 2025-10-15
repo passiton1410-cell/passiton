@@ -11,35 +11,40 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
 export async function POST(req: Request) {
   await connectToDatabase();
 
-  const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName, personalEmail, personalId, pincode, course, department, semester, year } = await req.json();
+  const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName, personalEmail, personalId, pincode, course, department, semester, year, termsAccepted } = await req.json();
 
-  // 1. Validate OTP
+  // 1. Validate Terms & Conditions acceptance
+  if (!termsAccepted) {
+    return NextResponse.json({ error: 'You must accept the Terms & Conditions to proceed' }, { status: 400 });
+  }
+
+  // 2. Validate OTP
   const existingOtp = await Otp.findOne({ email });
   if (!existingOtp || existingOtp.otp !== otp || existingOtp.expiresAt < new Date()) {
     return NextResponse.json({ error: 'Invalid or expired OTP' }, { status: 400 });
   }
 
-  // 2. Check if user already exists by email
+  // 3. Check if user already exists by email
   const alreadyUser = await User.findOne({ email });
   if (alreadyUser) {
     return NextResponse.json({ error: 'User already exists' }, { status: 400 });
   }
 
-  // 3. Ensure required fields
+  // 4. Ensure required fields
   if (!fullName || !username || !collegeIdUrl || !state || !city || !collegeName) {
     return NextResponse.json({ error: 'Full name, username, college, state, city, and ID are required' }, { status: 400 });
   }
 
-  // 4. Ensure username is unique
+  // 5. Ensure username is unique
   const takenUsername = await User.findOne({ username });
   if (takenUsername) {
     return NextResponse.json({ error: 'Username already taken' }, { status: 400 });
   }
 
-  // 5. Hash password
+  // 6. Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // 6. Create user
+  // 7. Create user
   const newUser = await User.create({
     email,
     password: hashedPassword,
@@ -59,7 +64,7 @@ export async function POST(req: Request) {
     ...(year && { year }),
   });
 
-  // 6.5. Link any colleges added without user reference to this user
+  // 8. Link any colleges added without user reference to this user
   try {
     // Find colleges that match the user's college name and don't have an addedBy reference
     const collegeToLink = await College.findOne({
@@ -77,10 +82,10 @@ export async function POST(req: Request) {
     console.error('Error linking college to user:', error);
   }
 
-  // 7. Delete OTP
+  // 9. Delete OTP
   await Otp.deleteOne({ email });
 
-  // 8. Generate JWT token
+  // 10. Generate JWT token
   const token = jwt.sign(
     {
       userId: newUser._id,
@@ -92,7 +97,7 @@ export async function POST(req: Request) {
     { expiresIn: '7d' }
   );
 
-  // 9. Send response with token cookie
+  // 11. Send response with token cookie
   const response = NextResponse.json({ success: true });
   response.cookies.set({
     name: 'token',

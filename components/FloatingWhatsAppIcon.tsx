@@ -3,14 +3,14 @@
 import React from 'react';
 
 interface FloatingWhatsAppIconProps {
-  phoneNumber?: string;
   message?: string;
 }
 
 const FloatingWhatsAppIcon: React.FC<FloatingWhatsAppIconProps> = ({
-  phoneNumber = "+911234567890",
   message = "Hello! I'm interested in your products."
 }) => {
+  // Get WhatsApp number from environment variable
+  const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+911234567890";
   const handleWhatsAppClick = () => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodedMessage}`;

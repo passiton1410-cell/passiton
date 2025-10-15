@@ -27,7 +27,6 @@ export default function HomePage() {
 
       {/* Floating WhatsApp Icon */}
       <FloatingWhatsAppIcon
-        phoneNumber="+911234567890"
         message="Hi! I'm interested in Pass It On marketplace."
       />
     </div>
