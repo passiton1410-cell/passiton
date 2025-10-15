@@ -20,6 +20,8 @@ const UserSchema = new Schema({
   year: { type: String },                    // Academic year
   personalEmail: { type: String },           // optional personal email
   personalId: { type: String },              // optional personal ID
+  termsAccepted: { type: Boolean, default: false }, // Terms & Conditions acceptance
+  termsAcceptedDate: { type: Date },         // When terms were accepted
 });
 
 

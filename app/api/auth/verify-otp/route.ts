@@ -13,12 +13,7 @@ export async function POST(req: Request) {
 
   const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName, personalEmail, personalId, pincode, course, department, semester, year, termsAccepted } = await req.json();
 
-  // 1. Validate Terms & Conditions acceptance
-  if (!termsAccepted) {
-    return NextResponse.json({ error: 'You must accept the Terms & Conditions to proceed' }, { status: 400 });
-  }
-
-  // 2. Validate OTP
+  // 1. Validate OTP
   const existingOtp = await Otp.findOne({ email });
   if (!existingOtp || existingOtp.otp !== otp || existingOtp.expiresAt < new Date()) {
     return NextResponse.json({ error: 'Invalid or expired OTP' }, { status: 400 });

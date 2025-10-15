@@ -34,6 +34,8 @@ export async function GET(req: NextRequest) {
         department: user.department,
         semester: user.semester,
         year: user.year,
+        termsAccepted: user.termsAccepted,
+        termsAcceptedDate: user.termsAcceptedDate,
       },
     });
   } catch {

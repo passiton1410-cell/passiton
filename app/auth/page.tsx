@@ -227,18 +227,20 @@ export default function AuthPage() {
           const userData = await userRes.json();
 
           if (userData.loggedIn && userData.user) {
-            // Redirect admin users to admin dashboard
-            if (userData.user.role === 'admin') {
+            // Check if user has accepted terms
+            if (!userData.user.termsAccepted) {
+              window.location.href = "/accept-terms";
+            } else if (userData.user.role === 'admin') {
               window.location.href = "/admin";
             } else {
               window.location.href = "/";
             }
           } else {
-            window.location.href = "/";
+            window.location.href = "/accept-terms";
           }
         } catch (error) {
           console.error('Error checking user role:', error);
-          window.location.href = "/";
+          window.location.href = "/accept-terms";
         }
       }, 1000);
     } else {
@@ -651,36 +653,26 @@ export default function AuthPage() {
           </div>
         )}
 
-        {/* T&C Checkbox and Modal Trigger */}
+        {/* Info about T&C */}
         {step === 'signup' && (
-          <div className="w-full flex items-start gap-3 mb-5">
-            {/* Bubbly Tick Checkbox */}
-            <span
-              className={`inline-block w-6 h-6 rounded-full cursor-pointer border-2 border-[#E0D5FA] shadow transition-colors flex items-center justify-center ${tncChecked ? 'bg-[#5B3DF6] border-[#5B3DF6]' : 'bg-[#faf7ed]'}`}
-              onClick={() => setTncChecked((v) => !v)}
-            >
-              {tncChecked && (
-                <svg className="block w-5 h-5 text-white animate-pulse" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
-                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )}
-            </span>
-            <span className="text-base text-[#5B3DF6] font-medium">
-              I agree to the{" "}
+          <div className="w-full mb-5 text-center">
+            <p className="text-sm text-[#7c689c]">
+              By creating an account, you agree to accept our{" "}
               <span
-                className="underline ml-1 cursor-pointer hover:text-[#6C4AB6] font-semibold"
+                className="underline cursor-pointer hover:text-[#6C4AB6] font-semibold text-[#5B3DF6]"
                 onClick={() => setShowTnc(true)}
               >
                 Terms & Conditions
-              </span>
-            </span>
+              </span>{" "}
+              after registration
+            </p>
           </div>
         )}
 
         {/* ACTION BUTTON */}
         <motion.button
           onClick={step === 'signup' ? handleSendOtp : handleVerifyOtp}
-          disabled={loading || uploadingId || (step === 'signup' && !tncChecked)}
+          disabled={loading || uploadingId}
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.97 }}
           className={`w-full py-4 mt-1 rounded-full font-bold tracking-wide text-lg transition-all shadow-lg flex items-center justify-center gap-2
