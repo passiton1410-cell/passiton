@@ -5,6 +5,7 @@ import { NavBar } from './NavBar';
 import Footer from './Footer';
 import SplashScreen from './SplashScreen';
 import { ClientNavBarWrapper } from './ClientNavBarWrapper';
+import TermsChecker from '../TermsChecker';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const [showSplash, setShowSplash] = useState(true);
@@ -26,10 +27,10 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   }
 
   return (
-    <>
+    <TermsChecker>
       <ClientNavBarWrapper />
       <main>{children}</main>
       <Footer />
-    </>
+    </TermsChecker>
   );
 }

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
-import { connectToDatabase } from '@/lib/db';
-import { User } from '@/models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
 if (JWT_SECRET === 'secret-key' && process.env.NODE_ENV === 'production') {
@@ -55,21 +53,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
-  // For protected routes, check if user has accepted terms (except accept-terms page)
-  if (!pathname.startsWith('/accept-terms')) {
-    try {
-      await connectToDatabase();
-      const userId = payload.userId || payload._id;
-      const user = await User.findById(userId);
-
-      if (user && !user.termsAccepted) {
-        return NextResponse.redirect(new URL('/accept-terms', request.url));
-      }
-    } catch (error) {
-      console.error('Error checking terms acceptance:', error);
-      // Continue with the request if database check fails
-    }
-  }
+  // Note: Terms acceptance checking is now handled client-side and in API routes
+  // to avoid database imports in middleware which cause build issues
 
   // Check if user is trying to access admin routes
   if (isAdminPath) {

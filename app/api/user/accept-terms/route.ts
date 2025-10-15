@@ -46,10 +46,36 @@ export async function POST(req: Request) {
     user.termsAcceptedDate = new Date();
     await user.save();
 
-    return NextResponse.json({
+    // Generate new JWT token with updated info
+    const newToken = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        fullName: user.fullName,
+        username: user.username,
+        termsAccepted: true,
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    const response = NextResponse.json({
       success: true,
       message: 'Terms accepted successfully'
     });
+
+    // Update the cookie with new token
+    response.cookies.set({
+      name: 'token',
+      value: newToken,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return response;
 
   } catch (error) {
     console.error('Error accepting terms:', error);
