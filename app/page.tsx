@@ -4,6 +4,7 @@ import OpportunitySection from "@/components/LandingPage/OpportunitySection";
 import HowItWorks from "@/components/LandingPage/HowItWorks";
 import Testimonials from "@/components/LandingPage/Testimonials";
 import WishlistForm from "@/components/LandingPage/WishlistForm";
+import FloatingWhatsAppIcon from "@/components/FloatingWhatsAppIcon";
 
 
 export default function HomePage() {
@@ -23,6 +24,12 @@ export default function HomePage() {
         Feedback?
       </a>
       <div className="h-10"></div>
+
+      {/* Floating WhatsApp Icon */}
+      <FloatingWhatsAppIcon
+        phoneNumber="+911234567890"
+        message="Hi! I'm interested in Pass It On marketplace."
+      />
     </div>
   );
 }
