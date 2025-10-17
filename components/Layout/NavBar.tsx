@@ -128,8 +128,8 @@ export function NavBar() {
     <Image
       src="/logo3.jpeg"
       alt="Brand Logo"
-      width={84}   // doubled from 42
-      height={84}  // doubled from 42
+      width={100}   // increased from 84 to fit logo better
+      height={100}  // increased from 84 to fit logo better
       className="rounded-full"
       priority
     />
