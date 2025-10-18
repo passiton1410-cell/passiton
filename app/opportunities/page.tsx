@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, MapPin, Clock, Users, Briefcase, Filter, Plus } from 'lucide-react';
+import { Search, MapPin, Clock, Users, Briefcase, Filter, Plus, ExternalLink } from 'lucide-react';
 
 interface Opportunity {
   _id: string;
@@ -10,6 +10,7 @@ interface Opportunity {
   description: string;
   type: string;
   company: string;
+  companyWebsite?: string;
   location: string;
   city: string;
   state: string;
@@ -227,6 +228,17 @@ export default function OpportunitiesPage() {
                     >
                       Call
                     </a>
+                    {opportunity.companyWebsite && (
+                      <a
+                        href={opportunity.companyWebsite}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs sm:text-sm font-medium text-center flex items-center gap-1 sm:gap-2"
+                      >
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                        Visit Website
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

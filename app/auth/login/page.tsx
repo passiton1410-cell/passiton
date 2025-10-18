@@ -136,7 +136,7 @@ export default function LoginPage() {
         <div className="mb-8 flex flex-col items-center">
           <span className="inline-block rounded-full shadow-lg border-4 border-white">
             <Image
-              src="/logo3.jpeg"
+              src="/logo3-adjusted.jpeg"
               alt="Site Logo"
               width={110}
               height={110}

@@ -8,7 +8,17 @@
       "Bash(timeout 30 npm run build)",
       "Bash(npm install:*)",
       "Bash(npm run dev:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(convert --version)",
+      "Bash(apt list:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py)",
+      "Read(//tmp/**)",
+      "Read(//mnt/c/Program Files/**)",
+      "Bash(cmd.exe /c:*)"
     ],
     "deny": [],
     "ask": []

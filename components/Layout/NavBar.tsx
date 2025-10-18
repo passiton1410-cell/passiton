@@ -126,7 +126,7 @@ export function NavBar() {
 >
   <span className="inline-flex items-center justify-center rounded-full shadow-md">
     <Image
-      src="/logo3.jpeg"
+      src="/logo3-adjusted.jpeg"
       alt="Brand Logo"
       width={100}   // increased from 84 to fit logo better
       height={100}  // increased from 84 to fit logo better

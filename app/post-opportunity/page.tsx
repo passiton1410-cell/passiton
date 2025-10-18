@@ -17,7 +17,8 @@ import {
   Target,
   Loader2,
   CheckCircle,
-  ArrowLeft
+  ArrowLeft,
+  Link
 } from 'lucide-react';
 import { getStates, getCitiesForState } from '@/lib/indian-states-cities';
 import CollegeAutocomplete from '@/components/CollegeAutocomplete';
@@ -33,6 +34,7 @@ export default function PostOpportunityPage() {
     description: '',
     type: 'jobs',
     company: '',
+    companyWebsite: '',
     location: 'on-site',
     city: '',
     state: '',
@@ -99,6 +101,23 @@ export default function PostOpportunityPage() {
       setStatus('❌ Please fill in all required fields');
       setLoading(false);
       return;
+    }
+
+    // URL validation (if provided)
+    if (formData.companyWebsite && formData.companyWebsite.trim()) {
+      try {
+        new URL(formData.companyWebsite);
+        // Check if URL starts with http or https
+        if (!formData.companyWebsite.startsWith('http://') && !formData.companyWebsite.startsWith('https://')) {
+          setStatus('❌ Please enter a valid website URL (must start with http:// or https://)');
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        setStatus('❌ Please enter a valid website URL');
+        setLoading(false);
+        return;
+      }
     }
 
     try {
@@ -236,6 +255,28 @@ export default function PostOpportunityPage() {
                   <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
                 </div>
               </div>
+            </div>
+
+            {/* Company Website */}
+            <div>
+              <label className="block text-sm font-bold text-[#23185B] mb-2">
+                Company Website
+                <span className="text-[#7c689c] font-normal text-xs ml-1">(optional)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="url"
+                  name="companyWebsite"
+                  value={formData.companyWebsite}
+                  onChange={handleInputChange}
+                  placeholder="https://www.company.com"
+                  className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
+                />
+                <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
+              </div>
+              <p className="text-xs text-[#7c689c] mt-1">
+                Provide a direct link to the company's website or career page
+              </p>
             </div>
 
             {/* Description */}

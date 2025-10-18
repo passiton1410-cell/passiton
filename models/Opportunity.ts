@@ -5,6 +5,7 @@ const OpportunitySchema = new Schema({
   description: { type: String, required: true },
   type: { type: String, required: true }, // suggested: jobs, internship, teaching, coaching, mentorship, other
   company: { type: String, required: true },
+  companyWebsite: { type: String }, // optional company website URL
   location: { type: String, required: true }, // remote, hybrid, on-site location
   city: { type: String, required: true },
   state: { type: String, required: true },

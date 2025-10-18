@@ -39,7 +39,7 @@ openGraph: {
   siteName: "Pass It On",
   images: [
     {
-      url: "https://www.passiton.cash/logo3.jpeg", // ✅ static path
+      url: "https://www.passiton.cash/logo3-adjusted.jpeg", // ✅ static path
       width: 1200,
       height: 630,
       alt: "Pass It On - Buy & Sell in College",
@@ -51,7 +51,7 @@ twitter: {
   card: "summary_large_image",
   title: "Pass It On – Student Marketplace",
   description: "Buy and sell your college items securely. Built by students, for students.",
-  images: ["https://www.passiton.cash/logo3.jpeg"], // ✅ static path
+  images: ["https://www.passiton.cash/logo3-adjusted.jpeg"], // ✅ static path
   creator: "@passiton.cash",
 },
   metadataBase: new URL("https://www.passiton.cash"),
