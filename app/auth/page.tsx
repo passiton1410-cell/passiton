@@ -16,6 +16,8 @@ import {
   Eye,
   EyeOff,
   Phone,
+  Calendar,
+  BookOpen,
 } from 'lucide-react';
 import { getStates, getCitiesForState } from '@/lib/indian-states-cities';
 
@@ -314,6 +316,13 @@ export default function AuthPage() {
               </>
             )}
           </h2>
+          {step === 'verify' && (
+            <p className="text-sm text-[#7c689c] mt-3 text-center font-medium">
+              We've sent a verification code to
+              <br />
+              <span className="text-[#5B3DF6] font-bold">{email}</span>
+            </p>
+          )}
         </div>
 
         {/* FORM FIELDS */}
@@ -575,7 +584,7 @@ export default function AuthPage() {
                     <option value="graduate" className="text-[#23185B]">Graduate</option>
                     <option value="postgraduate" className="text-[#23185B]">Post Graduate</option>
                   </select>
-                  <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-500 pointer-events-none" />
+                  <Calendar size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-500 pointer-events-none" />
                 </div>
                 <div className="relative">
                   <select
@@ -595,7 +604,7 @@ export default function AuthPage() {
                     <option value="8" className="text-[#23185B]">8th Semester</option>
                     <option value="other" className="text-[#23185B]">Other</option>
                   </select>
-                  <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none" />
+                  <BookOpen size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none" />
                 </div>
               </div>
             </div>
