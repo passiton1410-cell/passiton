@@ -15,6 +15,7 @@ import {
   GraduationCap,
   Eye,
   EyeOff,
+  Phone,
 } from 'lucide-react';
 import { getStates, getCitiesForState } from '@/lib/indian-states-cities';
 
@@ -49,6 +50,7 @@ export default function AuthPage() {
   const [addingCollege, setAddingCollege] = useState(false);
   const [personalEmail, setPersonalEmail] = useState('');
   const [personalId, setPersonalId] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const collegeContainerRef = useRef<HTMLDivElement>(null);
 
   // Handle clicking outside college suggestions
@@ -159,8 +161,8 @@ export default function AuthPage() {
     setStatus('');
     setUserExists(false);
 
-    if (!email || !password || !fullName || !username || !collegeIdUrl || !selectedState || !selectedCity || !collegeName || !course || !department || !semester || !year) {
-      setStatus('❌ All fields including academic information are required.');
+    if (!email || !password || !fullName || !username || !mobileNumber || !collegeIdUrl || !selectedState || !selectedCity || !collegeName || !course || !department || !semester || !year) {
+      setStatus('❌ All fields including mobile number and academic information are required.');
       setLoading(false);
       return;
     }
@@ -199,6 +201,7 @@ export default function AuthPage() {
         otp,
         fullName,
         username,
+        mobileNumber,
         collegeIdUrl,
         state: selectedState,
         city: selectedCity,
@@ -478,7 +481,7 @@ export default function AuthPage() {
               )}
             </div>
 
-            {/* Email and Password */}
+            {/* Email, Password, and Mobile Number */}
             <div className="w-full flex flex-col gap-4 mb-4">
               {/* Email */}
               <div className="relative">
@@ -491,6 +494,18 @@ export default function AuthPage() {
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <MailCheck size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8e79df]" />
+              </div>
+              {/* Mobile Number */}
+              <div className="relative">
+                <input
+                  type="tel"
+                  placeholder="Mobile number"
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  autoComplete="tel"
+                  className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+                />
+                <Phone size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400" />
               </div>
               {/* Password */}
               <div className="relative">
@@ -542,8 +557,26 @@ export default function AuthPage() {
                   <UserRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-teal-500" />
                 </div>
               </div>
-              {/* Semester and Year */}
+              {/* Year and Semester */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
+                  <select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-rose-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
+                    style={{ color: year ? '#23185B' : '#a78bfa' }}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    <option value="1" className="text-[#23185B]">1st Year</option>
+                    <option value="2" className="text-[#23185B]">2nd Year</option>
+                    <option value="3" className="text-[#23185B]">3rd Year</option>
+                    <option value="4" className="text-[#23185B]">4th Year</option>
+                    <option value="5" className="text-[#23185B]">5th Year</option>
+                    <option value="graduate" className="text-[#23185B]">Graduate</option>
+                    <option value="postgraduate" className="text-[#23185B]">Post Graduate</option>
+                  </select>
+                  <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-500 pointer-events-none" />
+                </div>
                 <div className="relative">
                   <select
                     value={semester}
@@ -563,24 +596,6 @@ export default function AuthPage() {
                     <option value="other" className="text-[#23185B]">Other</option>
                   </select>
                   <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none" />
-                </div>
-                <div className="relative">
-                  <select
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-rose-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
-                    style={{ color: year ? '#23185B' : '#a78bfa' }}
-                  >
-                    <option value="" disabled>Select Year</option>
-                    <option value="1" className="text-[#23185B]">1st Year</option>
-                    <option value="2" className="text-[#23185B]">2nd Year</option>
-                    <option value="3" className="text-[#23185B]">3rd Year</option>
-                    <option value="4" className="text-[#23185B]">4th Year</option>
-                    <option value="5" className="text-[#23185B]">5th Year</option>
-                    <option value="graduate" className="text-[#23185B]">Graduate</option>
-                    <option value="postgraduate" className="text-[#23185B]">Post Graduate</option>
-                  </select>
-                  <MapPin size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-500 pointer-events-none" />
                 </div>
               </div>
             </div>

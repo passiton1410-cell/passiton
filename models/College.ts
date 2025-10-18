@@ -10,7 +10,7 @@ const CollegeSchema = new mongoose.Schema({
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
   },
   verified: {
     type: Boolean,
