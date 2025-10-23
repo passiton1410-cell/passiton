@@ -164,7 +164,7 @@ export default function AuthPage() {
     setUserExists(false);
 
     if (!email || !password || !fullName || !username || !mobileNumber || !collegeIdUrl || !selectedState || !selectedCity || !collegeName || !course || !department || !semester || !year) {
-      setStatus('❌ All fields including mobile number and academic information are required.');
+      setStatus('❌ All fields are required except personal email and personal ID.');
       setLoading(false);
       return;
     }
@@ -203,11 +203,11 @@ export default function AuthPage() {
         otp,
         fullName,
         username,
-        mobileNumber,
+        mobileNumber: mobileNumber.trim(),
         collegeIdUrl,
         state: selectedState,
         city: selectedCity,
-        collegeName: collegeName,
+        collegeName: collegeName.trim(),
         personalEmail: personalEmail.trim() || undefined,
         personalId: personalId.trim() || undefined,
         pincode: pincode.trim() || undefined,
@@ -334,9 +334,10 @@ export default function AuthPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Full Name"
+                  placeholder="Full Name *"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <UserRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400" />
@@ -345,10 +346,11 @@ export default function AuthPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Username"
+                  placeholder="Username *"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   autoComplete="username"
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <UserCircle size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-fuchsia-500" />
@@ -362,10 +364,11 @@ export default function AuthPage() {
                 <select
                   value={selectedState}
                   onChange={(e) => handleStateChange(e.target.value)}
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
                   style={{ color: selectedState ? '#23185B' : '#a78bfa' }}
                 >
-                  <option value="" disabled>Select State</option>
+                  <option value="" disabled>Select State *</option>
                   {getStates().map((state) => (
                     <option key={state} value={state} className="text-[#23185B]">
                       {state}
@@ -381,11 +384,12 @@ export default function AuthPage() {
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
                   disabled={!selectedState}
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ color: selectedCity ? '#23185B' : '#a78bfa' }}
                 >
                   <option value="" disabled>
-                    {selectedState ? 'Select City' : 'Select State First'}
+                    {selectedState ? 'Select City *' : 'Select State First'}
                   </option>
                   {selectedState && getCitiesForState(selectedState).map((city) => (
                     <option key={city} value={city} className="text-[#23185B]">
@@ -416,7 +420,7 @@ export default function AuthPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="College/University Name"
+                  placeholder="College/University Name *"
                   value={collegeName}
                   onChange={(e) => handleCollegeNameChange(e.target.value)}
                   onFocus={() => {
@@ -424,6 +428,7 @@ export default function AuthPage() {
                       setShowCollegeSuggestions(true);
                     }
                   }}
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 {collegeSearchLoading ? (
@@ -496,10 +501,11 @@ export default function AuthPage() {
               <div className="relative">
                 <input
                   type="email"
-                  placeholder="Your student email"
+                  placeholder="Your student email *"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="username"
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <MailCheck size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8e79df]" />
@@ -508,10 +514,11 @@ export default function AuthPage() {
               <div className="relative">
                 <input
                   type="tel"
-                  placeholder="Mobile number"
+                  placeholder="Mobile number *"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   autoComplete="tel"
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-blue-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                 />
                 <Phone size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400" />
@@ -520,10 +527,11 @@ export default function AuthPage() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Set a password"
+                  placeholder="Set a password *"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="new-password"
+                  required
                   className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-pink-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-16"
                 />
                 <button
@@ -541,16 +549,17 @@ export default function AuthPage() {
             {/* Academic Information Section */}
             <div className="w-full mb-4">
               <p className="text-sm text-[#7c689c] mb-3 text-center font-medium">
-                Academic Information (Required)
+                Academic Information (All fields marked with * are required)
               </p>
               {/* Course and Department */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Course/Program (e.g., B.Tech)"
+                    placeholder="Course/Program (e.g., B.Tech) *"
                     value={course}
                     onChange={(e) => setCourse(e.target.value)}
+                    required
                     className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-indigo-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                   />
                   <GraduationCap size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500" />
@@ -558,9 +567,10 @@ export default function AuthPage() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Department (e.g., Computer Science)"
+                    placeholder="Department (e.g., Computer Science) *"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
+                    required
                     className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-teal-300 focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
                   />
                   <UserRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-teal-500" />
@@ -572,10 +582,11 @@ export default function AuthPage() {
                   <select
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
+                    required
                     className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-rose-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
                     style={{ color: year ? '#23185B' : '#a78bfa' }}
                   >
-                    <option value="" disabled>Select Year</option>
+                    <option value="" disabled>Select Year *</option>
                     <option value="1" className="text-[#23185B]">1st Year</option>
                     <option value="2" className="text-[#23185B]">2nd Year</option>
                     <option value="3" className="text-[#23185B]">3rd Year</option>
@@ -590,10 +601,11 @@ export default function AuthPage() {
                   <select
                     value={semester}
                     onChange={(e) => setSemester(e.target.value)}
+                    required
                     className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-emerald-300 focus:outline-none text-base shadow font-semibold transition pr-10 appearance-none cursor-pointer"
                     style={{ color: semester ? '#23185B' : '#a78bfa' }}
                   >
-                    <option value="" disabled>Select Semester</option>
+                    <option value="" disabled>Select Semester *</option>
                     <option value="1" className="text-[#23185B]">1st Semester</option>
                     <option value="2" className="text-[#23185B]">2nd Semester</option>
                     <option value="3" className="text-[#23185B]">3rd Semester</option>
@@ -612,7 +624,7 @@ export default function AuthPage() {
             {/* Optional Fields Section */}
             <div className="w-full mb-4">
               <p className="text-sm text-[#7c689c] mb-3 text-center font-medium">
-                Optional Information (can be added later)
+                Optional Information (only personal email and personal ID are optional)
               </p>
               <div className="flex flex-col gap-4">
                 {/* Personal Email */}

@@ -9,15 +9,15 @@ const UserSchema = new Schema({
   verified: { type: Boolean, default: false },     // new
   role: { type: String, default: 'user' }, // user or admin - changeable from database
   createdAt: { type: Date, default: Date.now },
-  mobile: { type: String },                  // new -> optional, editable via card
-  collegeName: { type: String },
+  mobile: { type: String, required: true },   // new -> mandatory mobile number
+  collegeName: { type: String, required: true }, // mandatory college name
   state: { type: String, required: true },   // Indian state
   city: { type: String, required: true },    // Indian city
-  pincode: { type: String },                 // Pincode
-  course: { type: String },                  // Academic course/program
-  department: { type: String },              // Academic department
-  semester: { type: String },                // Current semester
-  year: { type: String },                    // Academic year
+  pincode: { type: String },                 // Pincode - optional
+  course: { type: String, required: true },  // Academic course/program - mandatory
+  department: { type: String, required: true }, // Academic department - mandatory
+  semester: { type: String, required: true }, // Current semester - mandatory
+  year: { type: String, required: true },    // Academic year - mandatory
   personalEmail: { type: String },           // optional personal email
   personalId: { type: String },              // optional personal ID
   termsAccepted: { type: Boolean, default: false }, // Terms & Conditions acceptance

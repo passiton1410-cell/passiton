@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
 export async function POST(req: Request) {
   await connectToDatabase();
 
-  const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName, personalEmail, personalId, pincode, course, department, semester, year, termsAccepted } = await req.json();
+  const { email, password, otp, fullName, username, collegeIdUrl, state, city, collegeName, personalEmail, personalId, pincode, course, department, semester, year, termsAccepted, mobileNumber } = await req.json();
 
   // 1. Validate OTP
   const existingOtp = await Otp.findOne({ email });
@@ -26,8 +26,8 @@ export async function POST(req: Request) {
   }
 
   // 4. Ensure required fields
-  if (!fullName || !username || !collegeIdUrl || !state || !city || !collegeName) {
-    return NextResponse.json({ error: 'Full name, username, college, state, city, and ID are required' }, { status: 400 });
+  if (!fullName || !username || !collegeIdUrl || !state || !city || !collegeName || !mobileNumber || !course || !department || !semester || !year) {
+    return NextResponse.json({ error: 'All fields are required except personal email and personal ID' }, { status: 400 });
   }
 
   // 5. Ensure username is unique
@@ -49,14 +49,15 @@ export async function POST(req: Request) {
     collegeName,
     state,
     city,
+    mobile: mobileNumber,
+    course,
+    department,
+    semester,
+    year,
     verified: true,
     ...(personalEmail && { personalEmail }),
     ...(personalId && { personalId }),
     ...(pincode && { pincode }),
-    ...(course && { course }),
-    ...(department && { department }),
-    ...(semester && { semester }),
-    ...(year && { year }),
   });
 
   // 8. Link any colleges added without user reference to this user
