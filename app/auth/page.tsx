@@ -53,6 +53,8 @@ export default function AuthPage() {
   const [personalEmail, setPersonalEmail] = useState('');
   const [personalId, setPersonalId] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
+  const [canResend, setCanResend] = useState(false);
   const collegeContainerRef = useRef<HTMLDivElement>(null);
 
   // Handle clicking outside college suggestions
@@ -68,6 +70,18 @@ export default function AuthPage() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Handle resend timer
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => {
+        setResendTimer(resendTimer - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (step === 'verify') {
+      setCanResend(true);
+    }
+  }, [resendTimer, step]);
 
   // Handle state change and reset city
   const handleStateChange = (state: string) => {
@@ -180,12 +194,39 @@ export default function AuthPage() {
     if (res.ok) {
       setStatus('✅ OTP sent to your email');
       setStep('verify');
+      setResendTimer(60); // Start 1-minute countdown
+      setCanResend(false);
     } else {
       setStatus(`❌ ${data.error}`);
       if (data.userExists) {
         setUserExists(true);
         setTimeout(() => router.push('/auth/login'), 2000);
       }
+    }
+
+    setLoading(false);
+  };
+
+  const handleResendOtp = async () => {
+    if (!canResend || loading) return;
+
+    setLoading(true);
+    setStatus('Resending OTP...');
+
+    const res = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, username }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setStatus('✅ New OTP sent to your email');
+      setResendTimer(60); // Restart 1-minute countdown
+      setCanResend(false);
+    } else {
+      setStatus(`❌ ${data.error}`);
     }
 
     setLoading(false);
@@ -317,11 +358,16 @@ export default function AuthPage() {
             )}
           </h2>
           {step === 'verify' && (
-            <p className="text-sm text-[#7c689c] mt-3 text-center font-medium">
-              We've sent a verification code to
-              <br />
-              <span className="text-[#5B3DF6] font-bold">{email}</span>
-            </p>
+            <div className="text-center mt-3">
+              <p className="text-sm text-[#7c689c] font-medium">
+                We've sent a verification code to
+                <br />
+                <span className="text-[#5B3DF6] font-bold">{email}</span>
+              </p>
+              <p className="text-xs text-[#7c689c] mt-2">
+                OTP is valid for 5 minutes
+              </p>
+            </div>
           )}
         </div>
 
@@ -675,17 +721,36 @@ export default function AuthPage() {
         )}
         {/* OTP Input */}
         {step === 'verify' && (
-          <div className="w-full mb-3 relative">
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#22C55E] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
-            />
-            <KeyRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#22C55E]" />
+          <div className="w-full mb-3">
+            <div className="relative mb-4">
+              <input
+                type="text"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                className="w-full px-5 py-4 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#22C55E] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+              />
+              <KeyRound size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#22C55E]" />
+            </div>
+
+            {/* Resend OTP Section */}
+            <div className="text-center">
+              {resendTimer > 0 ? (
+                <p className="text-sm text-[#7c689c] font-medium">
+                  Resend OTP in <span className="text-[#5B3DF6] font-bold">{resendTimer}s</span>
+                </p>
+              ) : canResend ? (
+                <button
+                  onClick={handleResendOtp}
+                  disabled={loading}
+                  className="text-sm text-[#5B3DF6] hover:text-[#4c32d9] font-semibold underline transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Resending...' : 'Resend OTP'}
+                </button>
+              ) : null}
+            </div>
           </div>
         )}
 

@@ -32,6 +32,8 @@ export default function OpportunitiesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  const [expandedRequirements, setExpandedRequirements] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchOpportunities();
@@ -63,6 +65,31 @@ export default function OpportunitiesPage() {
 
   const opportunityTypes = ['all', 'jobs', 'internship', 'teaching', 'coaching', 'mentorship', 'other'];
   const locationTypes = ['all', 'remote', 'hybrid', 'on-site'];
+
+  const toggleDescription = (opportunityId: string) => {
+    const newExpanded = new Set(expandedDescriptions);
+    if (newExpanded.has(opportunityId)) {
+      newExpanded.delete(opportunityId);
+    } else {
+      newExpanded.add(opportunityId);
+    }
+    setExpandedDescriptions(newExpanded);
+  };
+
+  const toggleRequirements = (opportunityId: string) => {
+    const newExpanded = new Set(expandedRequirements);
+    if (newExpanded.has(opportunityId)) {
+      newExpanded.delete(opportunityId);
+    } else {
+      newExpanded.add(opportunityId);
+    }
+    setExpandedRequirements(newExpanded);
+  };
+
+  const truncateText = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).trim() + '...';
+  };
 
   if (loading) {
     return (
@@ -169,7 +196,7 @@ export default function OpportunitiesPage() {
         ) : (
           <div className="grid gap-4 sm:gap-6">
             {filteredOpportunities.map((opportunity) => (
-              <div key={opportunity._id} className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow mx-2 sm:mx-0">
+              <div key={opportunity._id} className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow mx-2 sm:mx-0 flex flex-col">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3 sm:gap-0">
                   <div className="flex-1">
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{opportunity.title}</h3>
@@ -180,7 +207,24 @@ export default function OpportunitiesPage() {
                   </span>
                 </div>
 
-                <p className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed">{opportunity.description}</p>
+                <div className="mb-4 flex-shrink-0">
+                  <div className={`${expandedDescriptions.has(opportunity._id) ? '' : 'min-h-[4rem]'}`}>
+                    <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                      {expandedDescriptions.has(opportunity._id)
+                        ? opportunity.description
+                        : truncateText(opportunity.description, 150)
+                      }
+                    </p>
+                    {opportunity.description.length > 150 && (
+                      <button
+                        onClick={() => toggleDescription(opportunity._id)}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-1 transition-colors"
+                      >
+                        {expandedDescriptions.has(opportunity._id) ? 'View Less' : 'View More'}
+                      </button>
+                    )}
+                  </div>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 text-xs sm:text-sm text-gray-600">
                   <div className="flex items-center">
@@ -205,13 +249,28 @@ export default function OpportunitiesPage() {
                 </div>
 
                 {opportunity.requirements && (
-                  <div className="mb-4">
+                  <div className="mb-4 flex-shrink-0">
                     <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Requirements:</h4>
-                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{opportunity.requirements}</p>
+                    <div className={`${expandedRequirements.has(opportunity._id) ? '' : 'min-h-[3rem]'}`}>
+                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                        {expandedRequirements.has(opportunity._id)
+                          ? opportunity.requirements
+                          : truncateText(opportunity.requirements, 100)
+                        }
+                      </p>
+                      {opportunity.requirements.length > 100 && (
+                        <button
+                          onClick={() => toggleRequirements(opportunity._id)}
+                          className="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium mt-1 transition-colors"
+                        >
+                          {expandedRequirements.has(opportunity._id) ? 'View Less' : 'View More'}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-4 border-t border-gray-200 gap-3 sm:gap-0">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-4 border-t border-gray-200 gap-3 sm:gap-0 mt-auto">
                   <div className="text-xs sm:text-sm text-gray-500">
                     Posted {new Date(opportunity.createdAt).toLocaleDateString()}
                   </div>
