@@ -271,12 +271,14 @@ export default function SellerPage() {
             <input
               type="text"
               name="phone"
-              placeholder={loadingUserData ? "Loading your phone..." : "Contact Phone"}
+              placeholder={loadingUserData ? "Loading your phone..." : "Contact Phone (from your profile)"}
               value={formData.phone}
               onChange={handleChange}
               required
-              className="px-5 py-3 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#EA4CA3] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition"
+              readOnly
+              className="px-5 py-3 rounded-full bg-gray-100 border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#EA4CA3] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition cursor-not-allowed"
               disabled={loadingUserData}
+              title="This phone number is taken from your profile and cannot be changed here"
             />
             <select
               name="category"
@@ -369,11 +371,20 @@ export default function SellerPage() {
           <CollegeAutocomplete
             value={formData.college}
             onChange={(value) => setFormData(prev => ({ ...prev, college: value }))}
-            placeholder={loadingUserData ? "Loading your college..." : "Select or add your college"}
+            placeholder={loadingUserData ? "Loading your college..." : "College (from your profile)"}
             className="w-full mt-1"
-            inputClassName="w-full px-5 py-3 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
+            inputClassName="w-full px-5 py-3 rounded-full bg-gray-100 border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10 cursor-not-allowed"
             required
+            readOnly={true}
           />
+
+          {/* Info note about auto-filled fields */}
+          <div className="text-sm text-[#7c689c] mt-4 p-3 bg-blue-50 rounded-xl border border-blue-200">
+            <p className="flex items-center gap-2">
+              <span>ℹ️</span>
+              <span>Your phone number and college are automatically filled from your profile and cannot be changed here.</span>
+            </p>
+          </div>
 
           <motion.button
             type="submit"

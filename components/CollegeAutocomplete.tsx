@@ -11,6 +11,7 @@ interface CollegeAutocompleteProps {
   className?: string;
   inputClassName?: string;
   required?: boolean;
+  readOnly?: boolean;
 }
 
 export default function CollegeAutocomplete({
@@ -19,7 +20,8 @@ export default function CollegeAutocomplete({
   placeholder = "College/University Name",
   className = "",
   inputClassName,
-  required = false
+  required = false,
+  readOnly = false
 }: CollegeAutocompleteProps) {
   const [collegeSuggestions, setCollegeSuggestions] = useState<string[]>([]);
   const [showCollegeSuggestions, setShowCollegeSuggestions] = useState(false);
@@ -45,6 +47,8 @@ export default function CollegeAutocomplete({
 
   // Handle college name input and search
   const handleCollegeNameChange = async (inputValue: string) => {
+    if (readOnly) return; // Don't allow changes if readOnly
+
     onChange(inputValue);
     setShowAddCollegeOption(false);
     setStatus('');
@@ -136,12 +140,18 @@ export default function CollegeAutocomplete({
           value={value}
           onChange={(e) => handleCollegeNameChange(e.target.value)}
           onFocus={() => {
-            if (collegeSuggestions.length > 0) {
+            if (!readOnly && collegeSuggestions.length > 0) {
               setShowCollegeSuggestions(true);
             }
           }}
           required={required}
-          className={inputClassName || "w-full px-4 py-3 rounded-xl bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-medium transition pr-10"}
+          readOnly={readOnly}
+          className={
+            readOnly
+              ? "w-full px-4 py-3 rounded-xl bg-gray-100 border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-medium transition pr-10 cursor-not-allowed"
+              : inputClassName || "w-full px-4 py-3 rounded-xl bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-medium transition pr-10"
+          }
+          title={readOnly ? "This college is taken from your profile and cannot be changed here" : undefined}
         />
         {collegeSearchLoading ? (
           <Loader2 size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 animate-spin" />
@@ -151,7 +161,7 @@ export default function CollegeAutocomplete({
       </div>
 
       {/* College Suggestions Dropdown */}
-      {showCollegeSuggestions && collegeSuggestions.length > 0 && (
+      {!readOnly && showCollegeSuggestions && collegeSuggestions.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -174,7 +184,7 @@ export default function CollegeAutocomplete({
       )}
 
       {/* Add College Option */}
-      {showAddCollegeOption && value.trim().length >= 3 && (
+      {!readOnly && showAddCollegeOption && value.trim().length >= 3 && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
