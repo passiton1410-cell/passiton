@@ -16,6 +16,8 @@ interface User {
   city: string;
   state: string;
   collegeIdUrl?: string;
+  mobile?: string;
+  personalEmail?: string;
 }
 
 interface Stats {
@@ -959,6 +961,18 @@ export default function AdminPage() {
                           <Mail size={16} />
                           <span>{selectedUser.user.email}</span>
                         </div>
+                        {selectedUser.user.mobile && (
+                          <div className="flex items-center gap-2 text-[#7c689c] mb-2">
+                            <Phone size={16} />
+                            <span>{selectedUser.user.mobile}</span>
+                          </div>
+                        )}
+                        {selectedUser.user.personalEmail && (
+                          <div className="flex items-center gap-2 text-[#7c689c] mb-2">
+                            <Mail size={16} />
+                            <span>Personal: {selectedUser.user.personalEmail}</span>
+                          </div>
+                        )}
                         <div className="flex items-center gap-2 text-[#7c689c] mb-2">
                           <MapPin size={16} />
                           <span>{selectedUser.user.city}, {selectedUser.user.state}</span>

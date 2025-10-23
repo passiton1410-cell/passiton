@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { PlusCircle, UploadCloud, X } from "lucide-react";
 import CollegeAutocomplete from "@/components/CollegeAutocomplete";
@@ -31,6 +32,7 @@ const allowedCategories = [
 ];
 
 export default function SellerPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -44,6 +46,44 @@ export default function SellerPage() {
 
   const [status, setStatus] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [loadingUserData, setLoadingUserData] = useState(true);
+
+  // Auto-fetch user profile data on component mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch('/api/user/profile');
+        if (response.ok) {
+          const data = await response.json();
+          const user = data.user;
+
+          // Auto-fill mobile number and college if they exist in user profile
+          setFormData(prev => ({
+            ...prev,
+            phone: user.mobile || "",
+            college: user.collegeName || ""
+          }));
+
+          // Show success message if data was auto-filled
+          if (user.mobile || user.collegeName) {
+            const autoFilledFields = [];
+            if (user.mobile) autoFilledFields.push("phone number");
+            if (user.collegeName) autoFilledFields.push("college");
+            setStatus(`✅ Auto-filled your ${autoFilledFields.join(" and ")} from profile`);
+            setTimeout(() => setStatus(""), 3000); // Clear message after 3 seconds
+          }
+        } else {
+          console.warn('Failed to fetch user profile');
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      } finally {
+        setLoadingUserData(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -153,7 +193,7 @@ export default function SellerPage() {
         }),
       });
       if (res.ok) {
-        setStatus("✅ Product listed successfully!");
+        setStatus("✅ Product listed successfully! Redirecting to home...");
         setFormData({
           title: "",
           price: "",
@@ -164,6 +204,11 @@ export default function SellerPage() {
           phone: "",
           description: "",
         });
+
+        // Redirect to home page after 2 seconds
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
       } else {
         setStatus("❌ Failed to submit. Try again.");
       }
@@ -226,11 +271,12 @@ export default function SellerPage() {
             <input
               type="text"
               name="phone"
-              placeholder="Contact Phone"
+              placeholder={loadingUserData ? "Loading your phone..." : "Contact Phone"}
               value={formData.phone}
               onChange={handleChange}
               required
               className="px-5 py-3 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#EA4CA3] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition"
+              disabled={loadingUserData}
             />
             <select
               name="category"
@@ -323,7 +369,7 @@ export default function SellerPage() {
           <CollegeAutocomplete
             value={formData.college}
             onChange={(value) => setFormData(prev => ({ ...prev, college: value }))}
-            placeholder="Select or add your college"
+            placeholder={loadingUserData ? "Loading your college..." : "Select or add your college"}
             className="w-full mt-1"
             inputClassName="w-full px-5 py-3 rounded-full bg-[#faf7ed] border-2 border-[#E0D5FA] text-[#23185B] focus:ring-2 focus:ring-[#5B3DF6] focus:outline-none text-base shadow placeholder-[#a78bfa] font-semibold transition pr-10"
             required
