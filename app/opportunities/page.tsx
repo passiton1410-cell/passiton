@@ -130,7 +130,7 @@ export default function OpportunitiesPage() {
                 <input
                   type="text"
                   placeholder="Search by title, company, or description..."
-                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border-2 border-[#E0D5FA] rounded-xl focus:ring-2 focus:ring-[#5B3DF6] focus:border-[#5B3DF6] text-sm sm:text-base bg-white text-[#23185B] hover:bg-gray-50 transition-colors shadow-sm font-medium placeholder:text-[#a78bfa]"
+                  className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border-2 border-[#E0D5FA] rounded-xl focus:ring-2 focus:ring-[#5B3DF6] focus:border-[#5B3DF6] text-base sm:text-lg bg-white text-[#23185B] hover:bg-gray-50 transition-colors shadow-sm font-medium placeholder:text-[#a78bfa]"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />

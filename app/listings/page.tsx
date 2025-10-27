@@ -18,6 +18,8 @@ export default function AllListingsPage() {
 
   useEffect(() => {
     fetchProducts();
+    // Set all available states from the Indian states data
+    setAvailableStates(getStates());
   }, []);
 
   const fetchProducts = async () => {
@@ -28,10 +30,8 @@ export default function AllListingsPage() {
       setProducts(data.products || []);
       setFiltered(data.products || []);
 
-      // Extract unique states and cities from products
-      const uniqueStates = [...new Set(data.products?.map((p: any) => p.state).filter(Boolean) as string[])].sort();
+      // Extract unique cities from products for the currently selected state
       const uniqueCities = [...new Set(data.products?.map((p: any) => p.city).filter(Boolean) as string[])].sort();
-      setAvailableStates(uniqueStates);
       setAvailableCities(uniqueCities);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -88,7 +88,7 @@ export default function AllListingsPage() {
         type="text"
         placeholder="🔍 Search by title, price or college"
         className="w-full max-w-xl mx-auto block mb-6 px-6 py-4
-                  rounded-full bg-white text-[#23185B] font-medium
+                  rounded-full bg-white text-[#23185B] font-medium text-base sm:text-lg
                   border-2 border-[#E0D5FA] shadow focus:outline-none
                   focus:ring-2 focus:ring-[#5B3DF6] transition-all placeholder:text-[#a78bfa]"
         value={searchTerm}
@@ -137,9 +137,7 @@ export default function AllListingsPage() {
                 disabled={!selectedState}
               >
                 <option value="">All Cities</option>
-                {selectedState && getCitiesForState(selectedState).filter(city =>
-                  availableCities.includes(city)
-                ).map(city => (
+                {selectedState && getCitiesForState(selectedState).map(city => (
                   <option key={city} value={city}>{city}</option>
                 ))}
               </select>

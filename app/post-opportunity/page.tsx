@@ -11,7 +11,7 @@ import {
   Phone,
   Calendar,
   Clock,
-  DollarSign,
+  IndianRupee,
   FileText,
   Users,
   Target,
@@ -417,7 +417,7 @@ export default function PostOpportunityPage() {
                     placeholder="e.g., ₹30,000/month"
                     className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                   />
-                  <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
+                  <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
                 </div>
               </div>
 

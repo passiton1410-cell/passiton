@@ -88,7 +88,7 @@ export default function SearchBox() {
           onKeyDown={handleKeyDown}
           type="text"
           placeholder="Search for products..."
-          className="w-full pl-4 pr-12 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B]"
+          className="w-full pl-4 pr-12 py-3 md:py-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] text-base md:text-lg font-medium"
         />
         <button
           onClick={handleSearch}
