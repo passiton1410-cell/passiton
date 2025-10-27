@@ -18,8 +18,10 @@ export default function AllListingsPage() {
 
   useEffect(() => {
     fetchProducts();
-    // Set all available states from the Indian states data
-    setAvailableStates(getStates());
+    // Set all available states from the Indian states data (ensure clean state and no duplicates)
+    const standardStates = getStates();
+    const uniqueStates = [...new Set(standardStates)]; // Remove any potential duplicates
+    setAvailableStates(uniqueStates);
   }, []);
 
   const fetchProducts = async () => {
@@ -49,8 +51,8 @@ export default function AllListingsPage() {
         p.college.toLowerCase().includes(term) ||
         p.price.toString().includes(term);
 
-      const matchesState = !selectedState || p.state === selectedState;
-      const matchesCity = !selectedCity || p.city === selectedCity;
+      const matchesState = !selectedState || (p.state && p.state.toLowerCase() === selectedState.toLowerCase());
+      const matchesCity = !selectedCity || (p.city && p.city.toLowerCase() === selectedCity.toLowerCase());
 
       return matchesSearch && matchesState && matchesCity;
     });
