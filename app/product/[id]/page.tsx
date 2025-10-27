@@ -25,6 +25,7 @@ const categoryColor = (cat: string) => {
 type ProductType = {
   _id: string;
   title: string;
+  description?: string;
   price: string;
   category: string;
   image: string;
@@ -200,7 +201,7 @@ export default function ProductDetail() {
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#5B3DF6] mb-1 text-center">
             {product.title}
           </h2>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-xl font-black text-[#22C55E] drop-shadow-sm">
               ₹{product.price}
             </span>
@@ -210,6 +211,16 @@ export default function ProductDetail() {
               {product.category}
             </span>
           </div>
+
+          {/* Product Description */}
+          {product.description && product.description.trim() && (
+            <div className="w-full mb-4 p-4 bg-[#faf7ed] border border-[#E0D5FA] rounded-xl">
+              <h3 className="text-sm font-bold text-[#23185B] mb-2">Description</h3>
+              <p className="text-sm text-[#5B3DF6] leading-relaxed whitespace-pre-wrap">
+                {product.description}
+              </p>
+            </div>
+          )}
 
           <span className="text-sm text-[#7c689c] mb-4 font-medium">
             Posted from: {product.college}

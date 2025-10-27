@@ -5,6 +5,7 @@ interface Props {
   product: {
     _id: string;
     title: string;
+    description?: string;
     image: string;
     images?: string[];
     price: string;

@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 const ProductSchema = new Schema({
   title: { type: String, required: true },
+  description: { type: String, required: false }, // Optional product description
   price: { type: String, required: true },
   category: { type: String, required: true }, // suggested: electronics, furniture, clothing, stationary, other
   images: {

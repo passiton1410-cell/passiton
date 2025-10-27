@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   }
 
   const data = await req.json();
-  const { title, price, category, image, images, phone, college } = data;
+  const { title, description, price, category, image, images, phone, college } = data;
 
   // ✅ Backend validation
   if (!title || title.trim().length < 3) {
@@ -93,6 +93,7 @@ export async function POST(req: Request) {
 
   const product = await Product.create({
     title: title.trim(),
+    description: description?.trim() || '', // Optional description
     price: numericPrice,
     category,
     images: productImages,  // New multiple images field
@@ -140,7 +141,7 @@ export async function GET(req: NextRequest) {
     }
 
     const products = await Product.find(query)
-      .select("title image images price college category email phone sold city state")
+      .select("title description image images price college category email phone sold city state")
       .sort({ createdAt: -1 })
       .limit(50); // Limit to 50 products for performance
 
