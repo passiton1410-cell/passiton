@@ -76,7 +76,7 @@ export default function SearchBox() {
   return (
     <div
       ref={containerRef}
-      className="w-full text-[#23185B]"
+      className="w-full max-w-sm md:max-w-md focus-within:max-w-lg xl:focus-within:max-w-2xl text-[#23185B] transition-all duration-300 ease-in-out"
     >
       <div className="flex items-center relative">
         <input
@@ -88,7 +88,7 @@ export default function SearchBox() {
           onKeyDown={handleKeyDown}
           type="text"
           placeholder="Search for products..."
-          className="w-full pl-4 md:pl-6 pr-12 md:pr-14 py-3 md:py-5 lg:py-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] text-base md:text-xl lg:text-2xl font-medium"
+          className="w-full pl-4 md:pl-6 pr-12 md:pr-14 py-3 md:py-5 lg:py-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] text-base md:text-xl lg:text-2xl font-medium transition-all duration-300 ease-in-out focus:shadow-lg"
         />
         <button
           onClick={handleSearch}

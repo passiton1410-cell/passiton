@@ -169,7 +169,7 @@ export function NavBar() {
         </div>
 
         {/* Search Box - full width mobile, center aligned desktop */}
-        <div className="w-full md:flex-1 md:px-6">
+        <div className="w-full md:flex-1 md:px-6 flex justify-center">
           <SearchBox />
         </div>
 
