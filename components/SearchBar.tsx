@@ -88,25 +88,28 @@ export default function SearchBox() {
   };
 
   // Helper function to determine if we should use desktop styling
-  const isDesktopRange = windowWidth >= 777 && windowWidth <= 1263;
-  const isLargeDesktop = windowWidth > 1263;
-  const isDesktopView = windowWidth >= 777;
+  // Consider anything >= 640px as non-mobile (tablet and desktop)
+  const isMobile = windowWidth < 640;
+  const isTablet = windowWidth >= 640 && windowWidth < 1024;
+  const isDesktop = windowWidth >= 1024;
 
   // Get container max width based on focus state and screen size
   const getContainerMaxWidth = () => {
-    if (!isDesktopView) return '100%';
+    if (isMobile) return '100%'; // Mobile: always full width
 
-    if (isDesktopRange) {
-      return isFocused ? '32rem' : '20rem'; // 512px : 320px
-    } else if (isLargeDesktop) {
-      return isFocused ? '42rem' : '28rem'; // 672px : 448px
+    // For tablet and desktop: expand when focused
+    if (isTablet) {
+      return isFocused ? '28rem' : '18rem'; // 448px : 288px
+    } else if (isDesktop) {
+      return isFocused ? '36rem' : '24rem'; // 576px : 384px
     }
     return '100%';
   };
 
   // Get input styling based on screen size
   const getInputStyling = () => {
-    if (!isDesktopView) {
+    if (isMobile) {
+      // Mobile styling - compact
       return {
         paddingLeft: '1rem',
         paddingRight: '3rem',
@@ -117,6 +120,7 @@ export default function SearchBox() {
       };
     }
 
+    // Tablet and desktop styling - enhanced
     return {
       paddingLeft: '1.5rem',
       paddingRight: '3.5rem',
@@ -162,7 +166,7 @@ export default function SearchBox() {
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#5B3DF6] hover:text-[#23185B] pointer-events-auto"
           aria-label="Submit search"
         >
-          <Search size={isDesktopView ? 28 : 24} />
+          <Search size={isMobile ? 24 : 28} />
         </button>
       </div>
 
