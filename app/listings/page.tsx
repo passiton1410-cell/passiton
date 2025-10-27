@@ -17,10 +17,15 @@ export default function AllListingsPage() {
   const [availableCities, setAvailableCities] = useState<string[]>([]);
 
   useEffect(() => {
+    // Clear states first to avoid any cached data
+    setAvailableStates([]);
+
     fetchProducts();
+
     // Set all available states from the Indian states data (ensure clean state and no duplicates)
     const standardStates = getStates();
     const uniqueStates = [...new Set(standardStates)]; // Remove any potential duplicates
+    console.log('Setting states:', uniqueStates);
     setAvailableStates(uniqueStates);
   }, []);
 
@@ -51,13 +56,32 @@ export default function AllListingsPage() {
         p.college.toLowerCase().includes(term) ||
         p.price.toString().includes(term);
 
-      const matchesState = !selectedState || (p.state && p.state.toLowerCase() === selectedState.toLowerCase());
+      const matchesState = !selectedState || (p.state && normalizeStateName(p.state) === normalizeStateName(selectedState));
       const matchesCity = !selectedCity || (p.city && p.city.toLowerCase() === selectedCity.toLowerCase());
 
       return matchesSearch && matchesState && matchesCity;
     });
     setFiltered(results);
   }, [searchTerm, products, selectedState, selectedCity]);
+
+  // Function to normalize state names for better matching
+  const normalizeStateName = (stateName: string): string => {
+    if (!stateName) return '';
+    const normalized = stateName.toLowerCase().replace(/\s+/g, '');
+
+    // Handle common variations
+    const stateMap: { [key: string]: string } = {
+      'uttarpradesh': 'uttar pradesh',
+      'uttarpradesha': 'uttar pradesh',
+      'arunachalpradesh': 'arunachal pradesh',
+      'himachalpradesh': 'himachal pradesh',
+      'madhyapradesh': 'madhya pradesh',
+      'andhrapradesh': 'andhra pradesh',
+      // Add more mappings as needed
+    };
+
+    return stateMap[normalized] || stateName.toLowerCase();
+  };
 
   const handleStateChange = (state: string) => {
     setSelectedState(state);
