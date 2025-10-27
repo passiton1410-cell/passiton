@@ -96,9 +96,32 @@ export default function PostOpportunityPage() {
     setLoading(true);
     setStatus('');
 
-    // Validation
-    if (!formData.title || !formData.description || !formData.company || !formData.email) {
-      setStatus('❌ Please fill in all required fields');
+    // Validation - Check each required field individually
+    const missingFields = [];
+
+    if (!formData.title.trim()) missingFields.push('Opportunity Title');
+    if (!formData.description.trim()) missingFields.push('Description');
+    if (!formData.company.trim()) missingFields.push('Company/Organization');
+    if (!formData.email.trim()) missingFields.push('Contact Email');
+    if (!formData.location.trim()) missingFields.push('Work Type');
+    if (!formData.state.trim()) missingFields.push('State');
+    if (!formData.city.trim()) missingFields.push('City');
+    if (!formData.phone.trim()) missingFields.push('Contact Phone');
+    if (!formData.salary.trim()) missingFields.push('Salary/Stipend');
+    if (!formData.duration.trim()) missingFields.push('Duration');
+    if (!formData.deadline.trim()) missingFields.push('Application Deadline');
+    if (!formData.requirements.trim()) missingFields.push('Requirements & Qualifications');
+    if (!formData.college.trim()) missingFields.push('College/University');
+
+    if (missingFields.length > 0) {
+      if (missingFields.length === 1) {
+        setStatus(`❌ Please fill in the ${missingFields[0]} field`);
+      } else if (missingFields.length === 2) {
+        setStatus(`❌ Please fill in the ${missingFields[0]} and ${missingFields[1]} fields`);
+      } else {
+        const lastField = missingFields.pop();
+        setStatus(`❌ Please fill in the ${missingFields.join(', ')}, and ${lastField} fields`);
+      }
       setLoading(false);
       return;
     }
@@ -303,12 +326,13 @@ export default function PostOpportunityPage() {
               {/* Work Type */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  Work Type
+                  Work Type *
                 </label>
                 <select
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-3 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                 >
                   {locationTypes.map(type => (
@@ -322,12 +346,13 @@ export default function PostOpportunityPage() {
               {/* State */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  State
+                  State *
                 </label>
                 <select
                   name="state"
                   value={formData.state}
                   onChange={(e) => handleStateChange(e.target.value)}
+                  required
                   className="w-full px-4 py-3 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                 >
                   <option value="">Select State</option>
@@ -342,13 +367,14 @@ export default function PostOpportunityPage() {
               {/* City */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  City
+                  City *
                 </label>
                 <select
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
                   disabled={!formData.state}
+                  required
                   className="w-full px-4 py-3 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium disabled:opacity-50"
                 >
                   <option value="">Select City</option>
@@ -385,7 +411,7 @@ export default function PostOpportunityPage() {
               {/* Phone */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  Contact Phone
+                  Contact Phone *
                 </label>
                 <div className="relative">
                   <input
@@ -394,6 +420,7 @@ export default function PostOpportunityPage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="+91 9876543210"
+                    required
                     className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                   />
                   <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
@@ -406,7 +433,7 @@ export default function PostOpportunityPage() {
               {/* Salary */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  Salary/Stipend
+                  Salary/Stipend *
                 </label>
                 <div className="relative">
                   <input
@@ -415,6 +442,7 @@ export default function PostOpportunityPage() {
                     value={formData.salary}
                     onChange={handleInputChange}
                     placeholder="e.g., ₹30,000/month"
+                    required
                     className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                   />
                   <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
@@ -424,7 +452,7 @@ export default function PostOpportunityPage() {
               {/* Duration */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  Duration
+                  Duration *
                 </label>
                 <div className="relative">
                   <input
@@ -433,6 +461,7 @@ export default function PostOpportunityPage() {
                     value={formData.duration}
                     onChange={handleInputChange}
                     placeholder="e.g., 3 months"
+                    required
                     className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                   />
                   <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
@@ -442,7 +471,7 @@ export default function PostOpportunityPage() {
               {/* Deadline */}
               <div>
                 <label className="block text-sm font-bold text-[#23185B] mb-2">
-                  Application Deadline
+                  Application Deadline *
                 </label>
                 <div className="relative">
                   <input
@@ -450,6 +479,7 @@ export default function PostOpportunityPage() {
                     name="deadline"
                     value={formData.deadline}
                     onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 pl-10 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium"
                   />
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c689c]" size={18} />
@@ -460,7 +490,7 @@ export default function PostOpportunityPage() {
             {/* Requirements */}
             <div>
               <label className="block text-sm font-bold text-[#23185B] mb-2">
-                Requirements & Qualifications
+                Requirements & Qualifications *
               </label>
               <textarea
                 name="requirements"
@@ -468,6 +498,7 @@ export default function PostOpportunityPage() {
                 onChange={handleInputChange}
                 placeholder="List the required skills, qualifications, or experience..."
                 rows={3}
+                required
                 className="w-full px-4 py-3 border-2 border-[#E0D5FA] rounded-xl focus:border-[#5B3DF6] focus:outline-none text-[#23185B] font-medium resize-none"
               />
             </div>
@@ -475,13 +506,14 @@ export default function PostOpportunityPage() {
             {/* College */}
             <div>
               <label className="block text-sm font-bold text-[#23185B] mb-2">
-                College/University
+                College/University *
               </label>
               <CollegeAutocomplete
                 value={formData.college}
                 onChange={(value) => setFormData(prev => ({ ...prev, college: value }))}
                 placeholder="Select or add your college"
                 className="w-full"
+                required
               />
             </div>
 
