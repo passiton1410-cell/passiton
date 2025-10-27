@@ -88,14 +88,14 @@ export default function SearchBox() {
           onKeyDown={handleKeyDown}
           type="text"
           placeholder="Search for products..."
-          className="w-full pl-4 pr-12 py-3 md:py-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] text-base md:text-lg font-medium"
+          className="w-full pl-4 md:pl-6 pr-12 md:pr-14 py-3 md:py-5 lg:py-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] text-base md:text-xl lg:text-2xl font-medium"
         />
         <button
           onClick={handleSearch}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[#5B3DF6] hover:text-[#23185B] pointer-events-auto"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#5B3DF6] hover:text-[#23185B] pointer-events-auto"
           aria-label="Submit search"
         >
-          <Search size={20} />
+          <Search size={24} className="md:w-6 md:h-6 lg:w-7 lg:h-7" />
         </button>
       </div>
 
