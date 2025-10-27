@@ -20,6 +20,8 @@ export default function SearchBox() {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,6 +35,18 @@ export default function SearchBox() {
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+    }
+
+    // Set initial width
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -73,10 +87,53 @@ export default function SearchBox() {
     }
   };
 
+  // Helper function to determine if we should use desktop styling
+  const isDesktopRange = windowWidth >= 777 && windowWidth <= 1263;
+  const isLargeDesktop = windowWidth > 1263;
+  const isDesktopView = windowWidth >= 777;
+
+  // Get container max width based on focus state and screen size
+  const getContainerMaxWidth = () => {
+    if (!isDesktopView) return '100%';
+
+    if (isDesktopRange) {
+      return isFocused ? '32rem' : '20rem'; // 512px : 320px
+    } else if (isLargeDesktop) {
+      return isFocused ? '42rem' : '28rem'; // 672px : 448px
+    }
+    return '100%';
+  };
+
+  // Get input styling based on screen size
+  const getInputStyling = () => {
+    if (!isDesktopView) {
+      return {
+        paddingLeft: '1rem',
+        paddingRight: '3rem',
+        paddingTop: '0.75rem',
+        paddingBottom: '0.75rem',
+        fontSize: '1rem',
+        lineHeight: '1.5rem'
+      };
+    }
+
+    return {
+      paddingLeft: '1.5rem',
+      paddingRight: '3.5rem',
+      paddingTop: '1.25rem',
+      paddingBottom: '1.25rem',
+      fontSize: '1.25rem',
+      lineHeight: '1.75rem'
+    };
+  };
+
   return (
     <div
       ref={containerRef}
-      className="w-full max-w-sm md:max-w-md focus-within:max-w-lg xl:focus-within:max-w-2xl text-[#23185B] transition-all duration-300 ease-in-out"
+      className="w-full text-[#23185B] transition-all duration-300 ease-in-out"
+      style={{
+        maxWidth: getContainerMaxWidth()
+      }}
     >
       <div className="flex items-center relative">
         <input
@@ -86,16 +143,26 @@ export default function SearchBox() {
             setShowDropdown(true);
           }}
           onKeyDown={handleKeyDown}
+          onFocus={() => {
+            setIsFocused(true);
+            setShowDropdown(true);
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              setIsFocused(false);
+            }, 150);
+          }}
           type="text"
           placeholder="Search for products..."
-          className="w-full pl-4 md:pl-6 pr-12 md:pr-14 py-3 md:py-5 lg:py-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] text-base md:text-xl lg:text-2xl font-medium transition-all duration-300 ease-in-out focus:shadow-lg"
+          className="w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#23185B] font-medium transition-all duration-300 ease-in-out focus:shadow-lg"
+          style={getInputStyling()}
         />
         <button
           onClick={handleSearch}
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#5B3DF6] hover:text-[#23185B] pointer-events-auto"
           aria-label="Submit search"
         >
-          <Search size={24} className="md:w-6 md:h-6 lg:w-7 lg:h-7" />
+          <Search size={isDesktopView ? 28 : 24} />
         </button>
       </div>
 
