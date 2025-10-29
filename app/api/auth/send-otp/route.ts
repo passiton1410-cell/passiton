@@ -106,10 +106,10 @@ export async function POST(req: Request) {
     console.log('📧 Send this OTP to:', email);
 
     // DEVELOPMENT MODE: Skip MSG91 for now, return success immediately
-    if (process.env.NODE_ENV === 'development') {
-      console.log('⚠️ DEVELOPMENT MODE: Skipping MSG91, using console OTP only');
-      return NextResponse.json({ success: true });
-    }
+   // if (process.env.NODE_ENV === 'development') {
+    //  console.log('⚠️ DEVELOPMENT MODE: Skipping MSG91, using console OTP only');
+    //  return NextResponse.json({ success: true });
+   // }
 
     const msgRes = await fetch(MSG91_API, {
       method: 'POST',
