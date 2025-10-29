@@ -40,6 +40,90 @@ export default function Testimonials() {
       name: "Tiya",
       //designation: "VP of Technology at FutureNet",
       src: "/testimonials/tiya.jpeg",
+    },
+    {
+      quote:
+        "I sold my old engineering books on PassItOn within a day — and bought a second-hand tablet for half the price!",
+      name: "Aarav Mehta",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "PassItOn made my hostel shifting so easy! Sold my furniture to juniors instead of throwing it away. Total win-win.",
+      name: "Ritika Sharma",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "Finally, a marketplace that's only for students. No scams, no spam — just verified college people on PassItOn.",
+      name: "Yusuf Khan",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "I love how PassItOn promotes reuse. Passing on my stuff actually feels good — sustainable and useful!",
+      name: "Tanvi Iyer",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "Got my first freelance logo-design gig through PassItOn's campus jobs section. Earned ₹800 and confidence both!",
+      name: "Harsh Verma",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "OLX was too messy, but PassItOn is student-only and super clean. I even met my lab partner here!",
+      name: "Simran Kaur",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "Listed my cycle, and a junior bought it the same day. Instant payment, zero hassle with PassItOn.",
+      name: "Aditya Nair",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "PassItOn is like our digital notice board — books, internships, roommates… everything in one place!",
+      name: "Neha Patel",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "Saved nearly ₹2,000 on used electronics from seniors. Why buy new when PassItOn exists?",
+      name: "Rohit Raj",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "The campus leaderboard makes it fun — I'm actually proud of being a top 'reuser' this month on PassItOn!",
+      name: "Kunal Joshi",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "PassItOn helped me donate my old uniforms and books to first-years. Feels great to give back.",
+      name: "Aditi Chauhan",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "The chat and UPI payment feature on PassItOn is smooth. I've completed five transactions without a single issue.",
+      name: "Nikhil Das",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "PassItOn is more than resale — it's a student community. I even found my internship here!",
+      name: "Sanya Thomas",
+      src: "/1.png",
+    },
+    {
+      quote:
+        "I joined for the deals, stayed for the vibe. PassItOn is literally the best thing to happen to our campus!",
+      name: "Rohan Dey",
+      src: "/1.png",
     },]
 
   return (

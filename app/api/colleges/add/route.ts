@@ -6,10 +6,12 @@ import { User } from '@/models/User';
 import { searchColleges as searchStaticColleges } from '@/lib/indian-colleges';
 
 export async function POST(req: NextRequest) {
+  console.log('Received request to add college');
   try {
     await connectToDatabase();
 
     const { collegeName } = await req.json();
+    console.log('Request body:', collegeName);
 
     if (!collegeName || collegeName.trim().length < 3) {
       return NextResponse.json({
