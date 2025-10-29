@@ -118,18 +118,6 @@ export default function Testimonials() {
         "PassItOn helped me donate my old uniforms and books to first-years. Feels great to give back.",
       name: "Aditi Chauhan",
       src: "/testimonial-avatars/image13.png",
-    },
-    {
-      quote:
-        "I joined for the deals, stayed for the vibe. PassItOn is literally the best thing to happen to our campus!",
-      name: "Rohan Dey",
-      src: "/testimonial-avatars/image14.png",
-    },
-    {
-      quote:
-        "PassItOn is more than resale — it's a student community. I even found my internship here!",
-      name: "Sanya Thomas",
-      src: "/testimonial-avatars/image15.png",
     },]
 
   return (
